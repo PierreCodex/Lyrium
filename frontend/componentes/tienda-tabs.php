@@ -4,6 +4,7 @@
  * 
  * Variables esperadas:
  * - $tienda: datos de la tienda
+ * - $productos: array de productos
  * - $sucursales: array de sucursales
  * - $fotos: array de fotos de galería
  * - $opiniones: array de opiniones/reseñas
@@ -17,32 +18,142 @@ $formularioAvanzado = ($plan === 'premium');
 ?>
 
 <div class="tienda-tabs">
-  <!-- Header de Tabs -->
-  <div class="tienda-tabs-header">
-    <button class="tienda-tab-btn active" data-tab="info">
-      <i class="ph-info mr-1"></i> Información
-    </button>
-    <button class="tienda-tab-btn" data-tab="sucursales">
-      <i class="ph-map-pin mr-1"></i> Sucursales
-    </button>
-    <button class="tienda-tab-btn" data-tab="fotos">
-      <i class="ph-images mr-1"></i> Fotos
-    </button>
-    <button class="tienda-tab-btn" data-tab="contacto">
-      <i class="ph-envelope mr-1"></i> Contacto
-    </button>
-    <button class="tienda-tab-btn" data-tab="opiniones">
-      <i class="ph-star mr-1"></i> Opiniones
-    </button>
-    <button class="tienda-tab-btn" data-tab="terminos">
-      <i class="ph-file-text mr-1"></i> Términos
-    </button>
+  <!-- Header de Tabs - Estilo Arrow Nav -->
+  <div class="tienda-tabs-header arrow-style shadow-sm">
+    <div class="tienda-tabs-nav">
+      <button class="tienda-tab-btn arrow-nav-btn active" data-tab="productos">
+        <span>Productos</span>
+      </button>
+      <button class="tienda-tab-btn arrow-nav-btn" data-tab="sucursales">
+        <span>Sucursales</span>
+      </button>
+
+      <button class="tienda-tab-btn arrow-nav-btn" data-tab="contacto">
+        <span>Contacto</span>
+      </button>
+      <button class="tienda-tab-btn arrow-nav-btn" data-tab="opiniones">
+        <span>Reseñas (<?php echo count($opiniones ?? []); ?>★)</span>
+      </button>
+      <button class="tienda-tab-btn arrow-nav-btn" data-tab="terminos">
+        <span>Acerca de</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ===================== -->
+  <!-- TAB: PRODUCTOS (NUEVO - PRIMERO) -->
+  <!-- ===================== -->
+  <div id="tab-productos" class="tienda-tab-content active">
+    
+    <!-- SCROLL DE PRODUCTOS DESTACADOS (S) - Ahora disponible en ambos para cumplir "1 scroll" -->
+    <div class="tienda-productos-grid-section">
+      <!-- Header del grid - Solo título, sin ordenar ni iconos -->
+      <div class="tienda-grid-header">
+        <h3 class="tienda-grid-titulo">
+          Productos destacados
+        </h3>
+      </div>
+      <div class="tienda-scroll-wrapper">
+        <div class="tienda-scroll-container">
+          <?php foreach (array_slice($productos, 0, 8) as $producto): ?>
+          <div class="producto-scroll-card-overlay">
+            <!-- Imagen del producto con overlay de botones -->
+            <div class="producto-scroll-imagen">
+              <a href="producto.php?id=<?php echo $producto['id']; ?>">
+                <img 
+                  src="<?php echo htmlspecialchars($producto['imagen']); ?>" 
+                  alt="<?php echo htmlspecialchars($producto['nombre']); ?>"
+                  loading="lazy"
+                >
+              </a>
+              
+              <!-- Sticker de estado -->
+              <?php if (!empty($producto['sticker'])): ?>
+              <span class="producto-scroll-sticker <?php echo htmlspecialchars($producto['sticker']); ?>">
+                <?php 
+                  $stickerTextos = [
+                    'oferta' => 'Oferta',
+                    'nuevo' => 'Nuevo',
+                    'promo' => 'Promo',
+                    'limitado' => 'Limitado'
+                  ];
+                  echo $stickerTextos[$producto['sticker']] ?? ucfirst($producto['sticker']);
+                ?>
+              </span>
+              <?php endif; ?>
+              
+              <!-- Icono favorito (esquina superior derecha) -->
+              <button class="producto-scroll-fav" title="Añadir a favoritos">
+                <i class="ph ph-heart"></i>
+              </button>
+              
+              <!-- Icono carrito (esquina inferior derecha) -->
+              <button class="producto-scroll-cart" title="Añadir al carrito">
+                <i class="ph ph-shopping-cart-simple"></i>
+              </button>
+              
+              <!-- Overlay con botones (aparece al hover) -->
+              <div class="producto-scroll-overlay">
+                <button class="producto-overlay-btn" onclick="vistaRapidaProducto(<?php echo $producto['id']; ?>)">
+                  <i class="ph ph-eye"></i>
+                  Previsualizar
+                </button>
+                <button class="producto-overlay-btn producto-overlay-btn-outline">
+                  <i class="ph ph-squares-four"></i>
+                  Artículos similares
+                </button>
+              </div>
+            </div>
+            
+            <!-- Info del producto -->
+            <div class="producto-scroll-info">
+              <h4 class="producto-scroll-nombre">
+                <a href="producto.php?id=<?php echo $producto['id']; ?>">
+                  <?php echo htmlspecialchars($producto['nombre']); ?>
+                </a>
+              </h4>
+              
+              <div class="producto-scroll-precios">
+                <span class="producto-scroll-precio">
+                  <?php echo number_format($producto['precio'], 2); ?>
+                </span>
+                <?php if (!empty($producto['precio_anterior'])): ?>
+                <span class="producto-scroll-precio-old">
+                  S/ <?php echo number_format($producto['precio_anterior'], 2); ?>
+                </span>
+                <?php endif; ?>
+              </div>
+              
+              <div class="producto-scroll-meta">
+                <div class="producto-scroll-stars">
+                  <?php for ($i = 1; $i <= 5; $i++): ?>
+                  <i class="ph-fill ph-star"></i>
+                  <?php endfor; ?>
+                  <span><?php echo $producto['ventas'] ?? rand(100, 5000); ?></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <?php endforeach; ?>
+        </div>
+        <button class="tienda-scroll-nav prev"><i class="ph-caret-left"></i></button>
+        <button class="tienda-scroll-nav next"><i class="ph-caret-right"></i></button>
+      </div>
+    </div>
+
+    <!-- Si es plan básico, incluimos el grid completo aquí para que no se vea vacío abajo -->
+    <?php if ($plan === 'basico'): ?>
+      <div class="mt-8">
+        <?php include 'componentes/tienda/tienda-productos-grid.php'; ?>
+      </div>
+    <?php endif; ?>
+
   </div>
 
   <!-- ===================== -->
   <!-- TAB: INFORMACIÓN -->
   <!-- ===================== -->
-  <div id="tab-info" class="tienda-tab-content active">
+  <div id="tab-info" class="tienda-tab-content">
     <div class="tienda-info-section">
       <h4 class="tienda-info-title">
         <i class="ph-building-office"></i>
@@ -190,12 +301,235 @@ $formularioAvanzado = ($plan === 'premium');
     </p>
   </div>
 
-  <!-- ===================== -->
-  <!-- TAB: CONTACTO -->
-  <!-- ===================== -->
   <div id="tab-contacto" class="tienda-tab-content">
+    <?php if ($plan === 'premium'): ?>
+    <!-- ========================================= -->
+    <!-- CONTACTO PREMIUM: Message Center Style -->
+    <!-- ========================================= -->
+    <div class="tienda-mensaje-layout shadow-sm">
+      <!-- Sidebar de mensajes -->
+      <aside class="mensaje-sidebar">
+        <div class="mensaje-sidebar-header">
+          <i class="ph ph-chat-circle-dots text-xl text-slate-400"></i>
+          <h3>Mensajes</h3>
+        </div>
+        
+        <div class="mensaje-list">
+          <!-- Item tienda (Activo) -->
+          <div class="mensaje-item active">
+            <div class="mensaje-item-avatar">
+              <img src="<?php echo htmlspecialchars($tienda['logo']); ?>" alt="Store Logo">
+            </div>
+            <div class="mensaje-item-info">
+              <div class="mensaje-item-header">
+                <span class="mensaje-item-nombre"><?php echo htmlspecialchars($tienda['nombre']); ?></span>
+                <span class="mensaje-item-hora"><?php echo date('H:i'); ?></span>
+              </div>
+              <p class="mensaje-item-preview">[Nuevo Mensaje]</p>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Área de mensaje principal -->
+      <div class="mensaje-main">
+        <div class="mensaje-main-header">
+          <h3><?php echo htmlspecialchars($tienda['nombre']); ?> Official Store</h3>
+          <div class="header-actions">
+            <button class="text-slate-400 hover:text-slate-600"><i class="ph ph-gear-six text-xl"></i></button>
+          </div>
+        </div>
+
+        <div class="mensaje-form-container" id="container-form-premium">
+          <form id="formContactoTiendaPremium" class="tienda-contacto-premium">
+            
+            <!-- Datos Personales (Grid) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div class="mensaje-field-group mb-0">
+                <label class="mensaje-field-label">Nombre completo *</label>
+                <input type="text" name="nombre" class="mensaje-input-text" placeholder="Tu nombre" required>
+              </div>
+              <div class="mensaje-field-group mb-0">
+                <label class="mensaje-field-label">Correo electrónico *</label>
+                <input type="email" name="correo" class="mensaje-input-text" placeholder="tucorreo@ejemplo.com" required>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div class="mensaje-field-group mb-0">
+                <label class="mensaje-field-label">Teléfono de contacto</label>
+                <input type="tel" name="telefono" class="mensaje-input-text" placeholder="+51 999 999 999">
+              </div>
+              <div class="mensaje-field-group mb-0">
+                <label class="mensaje-field-label">Asunto del mensaje *</label>
+                <select name="asunto" id="asunto-premium" class="mensaje-input-text cursor-pointer" required>
+                  <option value="">Selecciona un asunto</option>
+                  <option value="consulta">Consulta general</option>
+                  <option value="cotizacion">Solicitar cotización</option>
+                  <option value="reclamo">Reclamo</option>
+                  <option value="sugerencia">Sugerencia</option>
+                  <option value="otro">Otro</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Thumbnail Image / Attachment -->
+            <div class="mensaje-field-group mb-4">
+              <label class="mensaje-field-label">Adjuntar archivo o enlace de Drive (Máx. 2MB)</label>
+              <div class="mensaje-file-upload">
+                <label for="contact_file" class="mensaje-file-btn">Seleccionar archivo</label>
+                <input type="file" id="contact_file" name="archivo" class="hidden" onchange="validarArchivo(this)">
+                <span id="file-name-display" class="mensaje-file-name">Ningún archivo seleccionado</span>
+              </div>
+              <p id="file-limit-warning" class="text-[10px] text-slate-400 mt-1">
+                Límite: **2 MB**. Si su archivo es más grande, por favor comprímalo o suba un enlace de Drive.
+              </p>
+            </div>
+
+            <!-- Project Description (CKEditor) -->
+            <div class="mensaje-field-group">
+              <label class="mensaje-field-label">Descripción del requerimiento o mensaje *</label>
+              
+              <!-- Cargamos CKEditor solo si es Premium -->
+              <script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
+              
+              <div id="editor-premium"></div>
+              <input type="hidden" name="mensaje" id="mensaje-hidden">
+            </div>
+
+            <div class="flex justify-start">
+              <button type="submit" class="mensaje-submit-btn" id="btn-resolver-premium">
+                <i class="ph ph-paper-plane-tilt"></i>
+                Enviar
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- VISTA DE CHAT (Inicialmente oculta) -->
+        <div id="container-chat-premium" class="hidden flex-1 flex flex-col h-full">
+          <div class="mensaje-chat-window" id="chat-messages-container">
+             <!-- Los mensajes se inyectarán aquí -->
+          </div>
+          
+          <!-- Input falso de chat inferior -->
+          <div class="p-4 border-t border-slate-100 bg-white">
+            <div class="flex items-center gap-3 bg-slate-50 p-2 rounded-full border border-slate-200">
+              <input type="text" placeholder="Escribe un mensaje de seguimiento..." class="flex-1 bg-transparent border-none outline-none px-4 text-sm" disabled>
+              <button class="w-10 h-10 bg-slate-200 text-white rounded-full"><i class="ph ph-paper-plane-right"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let premiumEditor;
+
+      function validarArchivo(input) {
+        const file = input.files[0];
+        const display = document.getElementById('file-name-display');
+        const warning = document.getElementById('file-limit-warning');
+        
+        if (file) {
+          display.innerText = file.name;
+          // Validar 2MB (2 * 1024 * 1024 bytes)
+          if (file.size > 2 * 1024 * 1024) {
+            warning.classList.remove('text-slate-400');
+            warning.classList.add('text-rose-500', 'font-bold');
+            warning.innerHTML = '<i class="ph ph-warning-circle"></i> ¡ARCHIVO MUY GRANDE! Por favor comprímalo a menos de 2MB o use Drive.';
+            input.value = ""; // Limpiar input
+          } else {
+            warning.classList.add('text-slate-400');
+            warning.classList.remove('text-rose-500', 'font-bold');
+            warning.innerText = 'Límite: 2 MB. Archivo aceptado correctamente.';
+          }
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        if (document.querySelector('#editor-premium')) {
+          ClassicEditor
+            .create(document.querySelector('#editor-premium'), {
+              placeholder: 'Escribe aquí los detalles de tu consulta...',
+              toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'undo', 'redo' ]
+            })
+            .then(editor => {
+              premiumEditor = editor;
+              editor.model.document.on('change:data', () => {
+                document.querySelector('#mensaje-hidden').value = editor.getData();
+              });
+            })
+            .catch(error => { console.error(error); });
+        }
+
+        // Lógica de Envío Simulado
+        const form = document.querySelector('#formContactoTiendaPremium');
+        if (form) {
+          form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const btn = document.querySelector('#btn-resolver-premium');
+            const originalContent = btn.innerHTML;
+            
+            // 1. Simular carga
+            btn.innerHTML = '<i class="ph ph-circle-notch animate-spin"></i> Enviando...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+              // 2. Transición a vista de chat
+              document.querySelector('#container-form-premium').classList.add('hidden');
+              document.querySelector('#container-chat-premium').classList.remove('hidden');
+              
+              // 3. Inyectar el mensaje del usuario
+              const mensajeUser = premiumEditor.getData();
+              const asunto = document.querySelector('#asunto-premium').value;
+              const chatContainer = document.querySelector('#chat-messages-container');
+              const hora = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+              chatContainer.innerHTML = `
+                <div class="chat-bubble mine">
+                  <strong>Asunto: ${asunto}</strong><br>
+                  ${mensajeUser}
+                  <span class="chat-time">${hora}</span>
+                </div>
+                <div id="typing-status" class="theirs opacity-70 italic text-xs mb-2">
+                  <i class="ph ph-dots-three-outline animate-pulse text-lg"></i> ${document.querySelector('.mensaje-item-nombre').innerText} está escribiendo...
+                </div>
+              `;
+
+              // Actualizar sidebar
+              document.querySelector('.mensaje-item-preview').innerHTML = '<span class="text-sky-500 font-bold">Enviado ✔</span>';
+
+              // 4. Respuesta automática simulada tras 3 segundos
+              setTimeout(() => {
+                const status = document.querySelector('#typing-status');
+                if (status) status.remove();
+
+                chatContainer.innerHTML += `
+                  <div class="chat-bubble theirs shadow-sm">
+                    ¡Gracias por contactarnos! Hemos recibido tu solicitud sobre <strong>"${asunto}"</strong> exitosamente.
+                    <br><br>
+                    Nuestro equipo revisará los detalles y te responderemos por este mismo medio o a tu correo en un plazo máximo de 24 horas.
+                    <span class="chat-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                  </div>
+                `;
+                
+                // Actualizar sidebar a "Leído"
+                document.querySelector('.mensaje-item-preview').innerHTML = 'Respuesta recibida';
+              }, 3000);
+
+            }, 1500);
+          });
+        }
+      });
+    </script>
+
+    <?php else: ?>
+    <!-- ========================================= -->
+    <!-- CONTACTO BÁSICO: Formulario Estándar -->
+    <!-- ========================================= -->
     <form class="tienda-contacto-form" id="formContactoTienda">
-      
       <!-- Campos básicos (todos los planes) -->
       <div class="tienda-form-group">
         <label class="tienda-form-label">Nombre *</label>
@@ -207,54 +541,17 @@ $formularioAvanzado = ($plan === 'premium');
         <input type="email" name="correo" class="tienda-form-input" required placeholder="tucorreo@ejemplo.com">
       </div>
       
-      <?php if ($formularioAvanzado): ?>
-      <!-- Campos avanzados (solo Premium) -->
-      <div class="tienda-form-group">
-        <label class="tienda-form-label">Teléfono</label>
-        <input type="tel" name="telefono" class="tienda-form-input" placeholder="+51 999 999 999">
-      </div>
-      
-      <div class="tienda-form-group">
-        <label class="tienda-form-label">Asunto *</label>
-        <select name="asunto" class="tienda-form-input" required>
-          <option value="">Selecciona un asunto</option>
-          <option value="consulta">Consulta general</option>
-          <option value="cotizacion">Solicitar cotización</option>
-          <option value="reclamo">Reclamo</option>
-          <option value="sugerencia">Sugerencia</option>
-          <option value="otro">Otro</option>
-        </select>
-      </div>
-      <?php endif; ?>
-      
       <div class="tienda-form-group">
         <label class="tienda-form-label">Mensaje *</label>
         <textarea name="mensaje" class="tienda-form-textarea" required placeholder="Escribe tu mensaje aquí..."></textarea>
       </div>
-      
-      <?php if ($formularioAvanzado): ?>
-      <!-- Adjuntar archivo (solo Premium) -->
-      <div class="tienda-form-group">
-        <label class="tienda-form-label">Adjuntar archivo (máx. 2MB)</label>
-        <input type="file" name="archivo" class="tienda-form-input" accept=".pdf,.doc,.docx,.jpg,.png">
-        <span class="text-xs text-slate-400 mt-1">PDF, DOC, DOCX, JPG, PNG</span>
-      </div>
-      <?php else: ?>
-      <!-- Mensaje de upgrade para campos avanzados -->
-      <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-center">
-        <i class="ph-crown text-amber-500 text-2xl mb-2"></i>
-        <p class="text-sm text-amber-700">
-          <strong>Plan Premium</strong> incluye: selección de asunto, adjuntar archivos y más opciones de contacto.
-          <a href="planes.php" class="underline font-bold">Actualizar plan</a>
-        </p>
-      </div>
-      <?php endif; ?>
       
       <button type="submit" class="tienda-form-btn">
         <i class="ph-paper-plane-tilt"></i>
         Enviar mensaje
       </button>
     </form>
+    <?php endif; ?>
   </div>
 
   <!-- ===================== -->
@@ -343,72 +640,237 @@ $formularioAvanzado = ($plan === 'premium');
   </div>
 
   <!-- ===================== -->
-  <!-- TAB: TÉRMINOS -->
+  <!-- TAB: ACERCA DE -->
   <!-- ===================== -->
   <div id="tab-terminos" class="tienda-tab-content">
     
-    <?php if (!empty($terminos['envio'])): ?>
-    <div class="tienda-terminos-section">
-      <h4 class="tienda-terminos-titulo">
-        <i class="ph-truck"></i>
-        Política de Envío
-      </h4>
-      <div class="tienda-terminos-contenido">
-        <?php echo nl2br(htmlspecialchars($terminos['envio'])); ?>
+    <!-- Descripción de la Empresa -->
+    <div class="bg-white rounded-xl border border-slate-200 p-6 mb-6">
+      <div class="flex items-start gap-4">
+        <div class="w-14 h-14 bg-sky-50 rounded-xl flex items-center justify-center flex-shrink-0">
+          <i class="ph-buildings text-sky-600 text-2xl"></i>
+        </div>
+        <div class="flex-1">
+          <h3 class="text-xl font-bold text-slate-800 mb-3">
+            <?php echo htmlspecialchars($tienda['nombre']); ?>
+          </h3>
+          <p class="text-slate-600 leading-relaxed mb-4">
+            <?php echo htmlspecialchars($tienda['descripcion']); ?>
+          </p>
+          
+          <!-- Categoría y Actividad en línea -->
+          <div class="flex flex-wrap gap-3 text-sm">
+            <div class="flex items-center gap-2 text-slate-600">
+              <i class="ph-tag text-purple-500"></i>
+              <span class="font-medium">Categoría:</span>
+              <span class="font-bold text-slate-700"><?php echo htmlspecialchars($tienda['categoria'] ?? 'General'); ?></span>
+            </div>
+            <div class="flex items-center gap-2 text-slate-600">
+              <i class="ph-briefcase text-emerald-500"></i>
+              <span class="font-medium">Actividad:</span>
+              <span class="font-bold text-slate-700"><?php echo htmlspecialchars($tienda['actividad'] ?? 'Comercio'); ?></span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-    <?php endif; ?>
-    
-    <?php if (!empty($terminos['devolucion'])): ?>
-    <div class="tienda-terminos-section">
-      <h4 class="tienda-terminos-titulo">
-        <i class="ph-arrow-counter-clockwise"></i>
-        Política de Devolución
+
+    <!-- Información de Contacto -->
+    <div class="bg-white rounded-xl border border-slate-200 p-6 mb-6">
+      <h4 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+        <i class="ph-address-book text-sky-600"></i>
+        Información de Contacto
       </h4>
-      <div class="tienda-terminos-contenido">
-        <?php echo nl2br(htmlspecialchars($terminos['devolucion'])); ?>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Teléfono -->
+        <?php if (!empty($tienda['telefono'])): ?>
+        <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-lg">
+          <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+            <i class="ph-phone text-blue-600"></i>
+          </div>
+          <div>
+            <p class="text-xs text-slate-500 font-medium">Teléfono</p>
+            <a href="tel:<?php echo htmlspecialchars($tienda['telefono']); ?>" class="text-sm font-bold text-slate-700 hover:text-sky-600">
+              <?php echo htmlspecialchars($tienda['telefono']); ?>
+            </a>
+          </div>
+        </div>
+        <?php endif; ?>
+        
+        <!-- Email -->
+        <?php if (!empty($tienda['correo'])): ?>
+        <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-lg">
+          <div class="w-10 h-10 bg-rose-100 rounded-lg flex items-center justify-center">
+            <i class="ph-envelope text-rose-600"></i>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-xs text-slate-500 font-medium">Correo Electrónico</p>
+            <a href="mailto:<?php echo htmlspecialchars($tienda['correo']); ?>" class="text-sm font-bold text-slate-700 hover:text-sky-600 truncate block">
+              <?php echo htmlspecialchars($tienda['correo']); ?>
+            </a>
+          </div>
+        </div>
+        <?php endif; ?>
+        
+        <!-- Dirección -->
+        <?php if (!empty($tienda['direccion'])): ?>
+        <div class="flex items-start gap-3 p-3 bg-slate-50 rounded-lg md:col-span-2">
+          <div class="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0">
+            <i class="ph-map-pin text-amber-600"></i>
+          </div>
+          <div>
+            <p class="text-xs text-slate-500 font-medium">Dirección</p>
+            <p class="text-sm font-bold text-slate-700">
+              <?php echo htmlspecialchars($tienda['direccion']); ?>
+            </p>
+          </div>
+        </div>
+        <?php endif; ?>
       </div>
     </div>
-    <?php endif; ?>
-    
-    <?php if (!empty($terminos['privacidad'])): ?>
-    <div class="tienda-terminos-section">
-      <h4 class="tienda-terminos-titulo">
-        <i class="ph-shield-check"></i>
-        Política de Privacidad
+
+    <!-- Redes Sociales -->
+    <?php if (!empty($redes)): ?>
+    <div class="bg-white rounded-xl border border-slate-200 p-6 mb-6">
+      <h4 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+        <i class="ph-share-network text-purple-600"></i>
+        Redes Sociales
       </h4>
-      <div class="tienda-terminos-contenido">
-        <?php echo nl2br(htmlspecialchars($terminos['privacidad'])); ?>
-      </div>
-    </div>
-    <?php endif; ?>
-    
-    <?php if (!empty($terminos['archivos'])): ?>
-    <div class="tienda-terminos-section">
-      <h4 class="tienda-terminos-titulo">
-        <i class="ph-files"></i>
-        Documentos Descargables
-      </h4>
-      <div class="flex flex-wrap gap-3">
-        <?php foreach ($terminos['archivos'] as $archivo): ?>
-        <a href="<?php echo htmlspecialchars($archivo['url']); ?>" target="_blank" class="tienda-terminos-archivo">
-          <i class="ph-file-pdf"></i>
-          <?php echo htmlspecialchars($archivo['nombre']); ?>
-          <i class="ph-download-simple ml-auto"></i>
+      
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+        <?php 
+        $redesIconos = [
+          'instagram' => ['icono' => 'ph-instagram-logo', 'color' => 'bg-gradient-to-br from-pink-500 to-purple-600', 'nombre' => 'Instagram'],
+          'facebook' => ['icono' => 'ph-facebook-logo', 'color' => 'bg-blue-600', 'nombre' => 'Facebook'],
+          'tiktok' => ['icono' => 'ph-tiktok-logo', 'color' => 'bg-slate-900', 'nombre' => 'TikTok'],
+          'whatsapp' => ['icono' => 'ph-whatsapp-logo', 'color' => 'bg-green-500', 'nombre' => 'WhatsApp'],
+          'youtube' => ['icono' => 'ph-youtube-logo', 'color' => 'bg-red-600', 'nombre' => 'YouTube'],
+          'twitter' => ['icono' => 'ph-twitter-logo', 'color' => 'bg-sky-500', 'nombre' => 'Twitter'],
+          'linkedin' => ['icono' => 'ph-linkedin-logo', 'color' => 'bg-blue-700', 'nombre' => 'LinkedIn'],
+          'pinterest' => ['icono' => 'ph-pinterest-logo', 'color' => 'bg-red-600', 'nombre' => 'Pinterest'],
+          'telegram' => ['icono' => 'ph-telegram-logo', 'color' => 'bg-sky-400', 'nombre' => 'Telegram'],
+          'web' => ['icono' => 'ph-globe', 'color' => 'bg-slate-600', 'nombre' => 'Sitio Web'],
+        ];
+        
+        foreach ($redes as $plataforma => $red): 
+          if (!empty($red['url'])):
+            $info = $redesIconos[$plataforma] ?? ['icono' => 'ph-link', 'color' => 'bg-slate-500', 'nombre' => ucfirst($plataforma)];
+        ?>
+        <a href="<?php echo htmlspecialchars($red['url']); ?>" target="_blank" 
+           class="flex items-center gap-2 p-3 rounded-lg border border-slate-200 hover:border-slate-300 hover:shadow-sm transition-all group">
+          <div class="w-8 h-8 <?php echo $info['color']; ?> rounded-lg flex items-center justify-center">
+            <i class="<?php echo $info['icono']; ?> text-white"></i>
+          </div>
+          <span class="text-xs font-semibold text-slate-700 group-hover:text-sky-600"><?php echo $info['nombre']; ?></span>
         </a>
+        <?php 
+          endif;
+        endforeach; 
+        ?>
+      </div>
+    </div>
+    <?php endif; ?>
+
+    <!-- Rubros -->
+    <?php if (!empty($tienda['rubros'])): ?>
+    <div class="bg-white rounded-xl border border-slate-200 p-6 mb-6">
+      <h4 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+        <i class="ph-stack text-indigo-600"></i>
+        Rubros
+      </h4>
+      
+      <div class="flex flex-wrap gap-2">
+        <?php foreach ($tienda['rubros'] as $rubro): ?>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 border border-slate-200 rounded-lg text-sm font-medium text-slate-700">
+          <i class="ph-check-circle text-sky-500 text-xs"></i>
+          <?php echo htmlspecialchars($rubro); ?>
+        </span>
         <?php endforeach; ?>
       </div>
     </div>
     <?php endif; ?>
-    
-    <?php if (empty($terminos['envio']) && empty($terminos['devolucion']) && empty($terminos['privacidad'])): ?>
-    <div class="text-center py-8 text-slate-400">
-      <i class="ph-file-text text-4xl mb-2"></i>
-      <p>No hay términos y condiciones publicados</p>
+
+    <!-- Políticas y Términos -->
+    <?php if (!empty($terminos['envio']) || !empty($terminos['devolucion']) || !empty($terminos['privacidad'])): ?>
+    <div class="bg-white rounded-xl border border-slate-200 p-6">
+      <h4 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+        <i class="ph-file-text text-slate-600"></i>
+        Políticas y Términos
+      </h4>
+      
+      <div class="space-y-3">
+        <?php if (!empty($terminos['envio'])): ?>
+        <details class="border border-slate-200 rounded-lg overflow-hidden">
+          <summary class="flex items-center justify-between p-4 cursor-pointer hover:bg-slate-50 transition-colors">
+            <div class="flex items-center gap-2">
+              <i class="ph-truck text-sky-600"></i>
+              <span class="font-semibold text-slate-700">Política de Envío</span>
+            </div>
+            <i class="ph-caret-down text-slate-400"></i>
+          </summary>
+          <div class="p-4 pt-0 text-sm text-slate-600 leading-relaxed">
+            <?php echo nl2br(htmlspecialchars($terminos['envio'])); ?>
+          </div>
+        </details>
+        <?php endif; ?>
+        
+        <?php if (!empty($terminos['devolucion'])): ?>
+        <details class="border border-slate-200 rounded-lg overflow-hidden">
+          <summary class="flex items-center justify-between p-4 cursor-pointer hover:bg-slate-50 transition-colors">
+            <div class="flex items-center gap-2">
+              <i class="ph-arrow-counter-clockwise text-amber-600"></i>
+              <span class="font-semibold text-slate-700">Política de Devolución</span>
+            </div>
+            <i class="ph-caret-down text-slate-400"></i>
+          </summary>
+          <div class="p-4 pt-0 text-sm text-slate-600 leading-relaxed">
+            <?php echo nl2br(htmlspecialchars($terminos['devolucion'])); ?>
+          </div>
+        </details>
+        <?php endif; ?>
+        
+        <?php if (!empty($terminos['privacidad'])): ?>
+        <details class="border border-slate-200 rounded-lg overflow-hidden">
+          <summary class="flex items-center justify-between p-4 cursor-pointer hover:bg-slate-50 transition-colors">
+            <div class="flex items-center gap-2">
+              <i class="ph-shield-check text-emerald-600"></i>
+              <span class="font-semibold text-slate-700">Política de Privacidad</span>
+            </div>
+            <i class="ph-caret-down text-slate-400"></i>
+          </summary>
+          <div class="p-4 pt-0 text-sm text-slate-600 leading-relaxed">
+            <?php echo nl2br(htmlspecialchars($terminos['privacidad'])); ?>
+          </div>
+        </details>
+        <?php endif; ?>
+      </div>
+      
+      <!-- Documentos Descargables -->
+      <?php if (!empty($terminos['archivos'])): ?>
+      <div class="mt-4 pt-4 border-t border-slate-200">
+        <p class="text-sm font-semibold text-slate-700 mb-3">
+          <i class="ph-download-simple mr-1"></i>
+          Documentos Descargables
+        </p>
+        <div class="flex flex-wrap gap-2">
+          <?php foreach ($terminos['archivos'] as $archivo): ?>
+          <a href="<?php echo htmlspecialchars($archivo['url']); ?>" target="_blank" 
+             class="inline-flex items-center gap-2 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium text-slate-700 hover:bg-sky-50 hover:border-sky-300 hover:text-sky-600 transition-all">
+            <i class="ph-file-pdf text-red-500"></i>
+            <?php echo htmlspecialchars($archivo['nombre']); ?>
+            <i class="ph-download-simple text-xs"></i>
+          </a>
+          <?php endforeach; ?>
+        </div>
+      </div>
+      <?php endif; ?>
     </div>
     <?php endif; ?>
     
   </div>
+
+
 
 </div>
 

@@ -153,7 +153,7 @@
         <a href="nosotros.php" class="flex items-center gap-2 hover:text-sky-500">
           <i class="ph-info text-lg"></i> Nosotros
         </a>
-        <a href="login.php" class="flex items-center gap-2 hover:text-sky-500">
+        <a href="registrar-tienda/login.php" class="flex items-center gap-2 hover:text-sky-500">
           <i class="ph-storefront text-lg"></i> Registra tu tienda
         </a>
         <a href="tiendasregistradas.php" class="flex items-center gap-2 hover:text-sky-500">
@@ -241,7 +241,7 @@
           <i class="ph-info text-[17px]"></i> NOSOTROS
         </a>
 
-        <a href="login.php" class="flex items-center gap-1 hover:text-sky-500 transition whitespace-nowrap">
+        <a href="registrar-tienda/login.php" class="flex items-center gap-1 hover:text-sky-500 transition whitespace-nowrap">
           <i class="ph-storefront text-[17px]"></i>
           <span class="whitespace-nowrap">REGISTRA TU TIENDA</span>
         </a>

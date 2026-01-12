@@ -30,7 +30,7 @@ $mostrar_titulo = $mostrar_titulo ?? true;
 $clase_extra = $clase_extra ?? '';
 
 // Clase para grid de 4 columnas
-$gridClass = $grid_cols === '4' ? 'tienda-productos-grid tienda-productos-grid-4' : 'tienda-productos-grid';
+$gridClass = $grid_cols === '5' ? 'tienda-productos-grid tienda-productos-grid-5' : 'tienda-productos-grid';
 ?>
 <section class="<?php echo $clase_extra ? htmlspecialchars($clase_extra) : 'mt-6'; ?>">
   <?php if ($mostrar_titulo): ?>
