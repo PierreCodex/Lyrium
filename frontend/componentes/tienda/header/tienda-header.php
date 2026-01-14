@@ -58,56 +58,55 @@ $badge_texto = $plan === 'premium' ? 'Premium' : 'Verificado';
               <?php echo htmlspecialchars($tienda['nombre']); ?>
             </span>
             <?php if ($plan === 'premium'): ?>
-            <span class="bg-amber-400 text-amber-900 text-xs px-2 py-0.5 rounded font-semibold flex items-center gap-1 shadow-sm">
-              <i class="ph-seal-check-fill text-sm"></i>
-              <?php echo $badge_texto; ?>
-            </span>
+            <img src="/lyrium/frontend/img/badges/Premiun1.png" alt="Premium" class="h-7 w-auto drop-shadow-md">
+            <?php else: ?>
+            <img src="/lyrium/frontend/img/badges/Basico1.png" alt="Básico" class="h-7 w-auto drop-shadow-md">
             <?php endif; ?>
           </div>
         </div>
 
-        <!-- Info del Negocio - Badges Mejorados -->
+        <!-- Info del Negocio - Badges con fondo transparente y texto oscuro -->
         <div class="hidden md:flex items-center gap-2.5 text-sm">
           <!-- Estado Abierto/Cerrado -->
           <?php if ($tienda['abierto']): ?>
-          <span class="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500/20 border border-emerald-400/30 rounded-lg backdrop-blur-sm">
-            <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse shadow-lg shadow-emerald-400/50"></span>
-            <span class="text-emerald-200 font-semibold">Abierto</span>
+          <span class="flex items-center gap-1.5 px-3 py-1.5 bg-white/430 backdrop-blur-sm rounded-lg shadow-sm">
+            <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+            <span class="text-emerald-700 font-semibold">Abierto</span>
           </span>
           <?php else: ?>
-          <span class="flex items-center gap-1.5 px-3 py-1.5 bg-red-500/20 border border-red-400/30 rounded-lg backdrop-blur-sm">
-            <span class="w-2 h-2 bg-red-400 rounded-full"></span>
-            <span class="text-red-200 font-semibold">Cerrado</span>
+          <span class="flex items-center gap-1.5 px-3 py-1.5 bg-white/90 backdrop-blur-sm rounded-lg shadow-sm">
+            <span class="w-2 h-2 bg-red-500 rounded-full"></span>
+            <span class="text-red-700 font-semibold">Cerrado</span>
           </span>
           <?php endif; ?>
           
           <!-- Ubicación -->
           <?php if (!empty($tienda['direccion'])): ?>
-          <span class="flex items-center gap-1.5 px-3 py-1.5 bg-white/10 border border-white/20 rounded-lg backdrop-blur-sm hover:bg-white/15 transition-colors">
-            <i class="ph-fill ph-map-pin text-sky-300"></i>
-            <span class="text-white/95 font-medium truncate max-w-40"><?php echo htmlspecialchars(explode(',', $tienda['direccion'])[0]); ?></span>
+          <span class="flex items-center gap-1.5 px-3 py-1.5 bg-white/90 backdrop-blur-sm rounded-lg shadow-sm">
+            <i class="ph-fill ph-map-pin text-sky-600"></i>
+            <span class="text-slate-700 font-medium truncate max-w-40"><?php echo htmlspecialchars(explode(',', $tienda['direccion'])[0]); ?></span>
           </span>
           <?php endif; ?>
           
           <!-- Categoría -->
-          <span class="flex items-center gap-1.5 px-3 py-1.5 bg-white/10 border border-white/20 rounded-lg backdrop-blur-sm hover:bg-white/15 transition-colors">
-            <i class="ph-fill ph-tag text-purple-300"></i>
-            <span class="text-white/95 font-medium"><?php echo htmlspecialchars($tienda['categoria'] ?? 'Sin categoría'); ?></span>
+          <span class="flex items-center gap-1.5 px-3 py-1.5 bg-white/90 backdrop-blur-sm rounded-lg shadow-sm">
+            <i class="ph-fill ph-tag text-purple-600"></i>
+            <span class="text-slate-700 font-medium"><?php echo htmlspecialchars($tienda['categoria'] ?? 'Sin categoría'); ?></span>
           </span>
           
           <!-- Calificación -->
           <?php if ($calificacion_promedio > 0): ?>
-          <span class="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/20 border border-amber-400/30 rounded-lg backdrop-blur-sm">
-            <i class="ph-fill ph-star text-amber-300"></i>
-            <span class="text-amber-100 font-bold"><?php echo $calificacion_promedio; ?></span>
+          <span class="flex items-center gap-1.5 px-3 py-1.5 bg-amber-400 rounded-lg shadow-sm">
+            <i class="ph-fill ph-star text-amber-800"></i>
+            <span class="text-amber-900 font-bold"><?php echo $calificacion_promedio; ?></span>
           </span>
           <?php endif; ?>
           
           <!-- Productos -->
-          <span class="flex items-center gap-1.5 px-3 py-1.5 bg-blue-500/20 border border-blue-400/30 rounded-lg backdrop-blur-sm">
-            <i class="ph-fill ph-package text-blue-300"></i>
-            <span class="text-blue-100 font-bold"><?php echo $total_productos; ?></span>
-            <span class="text-blue-200/80 text-xs">productos</span>
+          <span class="flex items-center gap-1.5 px-3 py-1.5 bg-white/90 backdrop-blur-sm rounded-lg shadow-sm">
+            <i class="ph-fill ph-package text-blue-600"></i>
+            <span class="text-slate-700 font-bold"><?php echo $total_productos; ?></span>
+            <span class="text-slate-500 text-xs">productos</span>
           </span>
         </div>
 

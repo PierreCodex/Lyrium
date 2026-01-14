@@ -40,7 +40,7 @@ $bannersPromo = [
   <?php if ($plan === 'premium'): ?>
   <!-- SIDEBAR VERTICAL DE PRODUCTOS - Solo Premium -->
   <!-- Regla: Vertical = Productos (NO publicidad) -->
-  <?php include 'componentes/tienda/sidebar-productos-vertical.php'; ?>
+  <?php include 'componentes/tienda/sidebar/sidebar-productos-vertical.php'; ?>
   
   <?php else: ?>
   <!-- Información del Negocio - Plan Básico (Cambiamos anuncios por utilidad) -->

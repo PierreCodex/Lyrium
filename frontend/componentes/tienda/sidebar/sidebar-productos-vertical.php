@@ -4,8 +4,8 @@
  * Diseño tipo lista vertical con estética consistente de la tienda
  */
 
-// Carrusel: Mostrar 3 productos a la vez, rotar entre todos los disponibles
-$itemsVisibles = 3; // Productos visibles simultáneamente
+// Carrusel: Mostrar 6 productos a la vez, rotar entre todos los disponibles
+$itemsVisibles = 6; // Productos visibles simultáneamente
 $productosSidebar = $productos ?? []; // Todos los productos disponibles
 
 // Mapeo de stickers para consistencia global
