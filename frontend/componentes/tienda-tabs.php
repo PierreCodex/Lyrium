@@ -141,6 +141,103 @@ $formularioAvanzado = ($plan === 'premium');
       </div>
     </div>
 
+    <!-- SEGUNDA SECCIÓN: TAMBIÉN TE PUEDE INTERESAR -->
+    <div class="tienda-productos-grid-section mt-6">
+      <!-- Header del grid -->
+      <div class="tienda-grid-header">
+        <h3 class="tienda-grid-titulo">
+          <i class="ph-fill ph-sparkle text-amber-500"></i>
+          También te puede interesar
+        </h3>
+      </div>
+      <div class="tienda-scroll-wrapper">
+        <div class="tienda-scroll-container">
+          <?php foreach (array_slice($productos, 8, 8) as $producto): ?>
+          <div class="producto-scroll-card-overlay">
+            <!-- Imagen del producto con overlay de botones -->
+            <div class="producto-scroll-imagen">
+              <a href="producto.php?id=<?php echo $producto['id']; ?>">
+                <img 
+                  src="<?php echo htmlspecialchars($producto['imagen']); ?>" 
+                  alt="<?php echo htmlspecialchars($producto['nombre']); ?>"
+                  loading="lazy"
+                >
+              </a>
+              
+              <!-- Sticker de estado -->
+              <?php if (!empty($producto['sticker'])): ?>
+              <span class="producto-scroll-sticker <?php echo htmlspecialchars($producto['sticker']); ?>">
+                <?php 
+                  $stickerTextos = [
+                    'oferta' => 'Oferta',
+                    'nuevo' => 'Nuevo',
+                    'promo' => 'Promo',
+                    'limitado' => 'Limitado'
+                  ];
+                  echo $stickerTextos[$producto['sticker']] ?? ucfirst($producto['sticker']);
+                ?>
+              </span>
+              <?php endif; ?>
+              
+              <!-- Icono favorito (esquina superior derecha) -->
+              <button class="producto-scroll-fav" title="Añadir a favoritos">
+                <i class="ph ph-heart"></i>
+              </button>
+              
+              <!-- Icono carrito (esquina inferior derecha) -->
+              <button class="producto-scroll-cart" title="Añadir al carrito">
+                <i class="ph ph-shopping-cart-simple"></i>
+              </button>
+              
+              <!-- Overlay con botones (aparece al hover) -->
+              <div class="producto-scroll-overlay">
+                <button class="producto-overlay-btn" onclick="vistaRapidaProducto(<?php echo $producto['id']; ?>)">
+                  <i class="ph ph-eye"></i>
+                  Previsualizar
+                </button>
+                <button class="producto-overlay-btn producto-overlay-btn-outline">
+                  <i class="ph ph-squares-four"></i>
+                  Artículos similares
+                </button>
+              </div>
+            </div>
+            
+            <!-- Info del producto -->
+            <div class="producto-scroll-info">
+              <h4 class="producto-scroll-nombre">
+                <a href="producto.php?id=<?php echo $producto['id']; ?>">
+                  <?php echo htmlspecialchars($producto['nombre']); ?>
+                </a>
+              </h4>
+              
+              <div class="producto-scroll-precios">
+                <span class="producto-scroll-precio">
+                  <?php echo number_format($producto['precio'], 2); ?>
+                </span>
+                <?php if (!empty($producto['precio_anterior'])): ?>
+                <span class="producto-scroll-precio-old">
+                  S/ <?php echo number_format($producto['precio_anterior'], 2); ?>
+                </span>
+                <?php endif; ?>
+              </div>
+              
+              <div class="producto-scroll-meta">
+                <div class="producto-scroll-stars">
+                  <?php for ($i = 1; $i <= 5; $i++): ?>
+                  <i class="ph-fill ph-star"></i>
+                  <?php endfor; ?>
+                  <span><?php echo $producto['ventas'] ?? rand(100, 5000); ?></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <?php endforeach; ?>
+        </div>
+        <button class="tienda-scroll-nav prev"><i class="ph-caret-left"></i></button>
+        <button class="tienda-scroll-nav next"><i class="ph-caret-right"></i></button>
+      </div>
+    </div>
+
     <!-- Si es plan básico, incluimos el grid completo aquí para que no se vea vacío abajo -->
     <?php if ($plan === 'basico'): ?>
       <div class="mt-8">
