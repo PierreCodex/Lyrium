@@ -1,0 +1,585 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   BARRA DE FILTROS DE PRODUCTOS - NUEVA ESTRUCTURA SUPERIOR
+   Filtros arriba de los tabs con panel desplegable
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Contenedor principal de filtros (arriba de tabs) */
+.tienda-filtros-bar-superior {
+    background: linear-gradient(135deg, #f0fdf4 0%, #ecfeff 50%, #f0f9ff 100%);
+    border: 1px solid #e0f2fe;
+    border-radius: 16px;
+    margin-bottom: 0.75rem;
+    box-shadow: 0 4px 20px rgba(14, 165, 233, 0.08);
+    overflow: hidden;
+}
+
+/* Fila principal: Búsqueda + Tags + Ordenar + Toggle */
+.filtros-fila-principal {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+}
+
+/* Botón toggle para mostrar/ocultar filtros avanzados */
+.filtro-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: #475569;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filtro-toggle-btn:hover {
+    border-color: #0ea5e9;
+    color: #0ea5e9;
+    background: #f0f9ff;
+}
+
+.filtro-toggle-btn.active {
+    background: #0ea5e9;
+    color: #fff;
+    border-color: #0ea5e9;
+}
+
+.filtro-toggle-btn .toggle-icon {
+    transition: transform 0.3s ease;
+}
+
+.filtro-toggle-btn.active .toggle-icon {
+    transform: rotate(180deg);
+}
+
+/* Fila de filtros avanzados (desplegable) */
+.filtros-fila-avanzados {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 1.5rem;
+    padding: 1rem 1.25rem;
+    background: rgba(255, 255, 255, 0.5);
+    border-top: 1px solid #e0f2fe;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ========================================
+   ESTILOS LEGACY (compatibilidad)
+   ======================================== */
+.tienda-filtros-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.25rem;
+    background: linear-gradient(135deg, #f0fdf4 0%, #ecfeff 50%, #f0f9ff 100%);
+    border: 1px solid #e0f2fe;
+    border-radius: 16px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 20px rgba(14, 165, 233, 0.08);
+}
+
+/* ========================================
+   COLUMNA 1: BÚSQUEDA
+   ======================================== */
+.filtro-busqueda {
+    flex: 1;
+    min-width: 200px;
+    max-width: 320px;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+}
+
+.filtro-busqueda:focus-within {
+    border-color: #0ea5e9;
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
+}
+
+.filtro-busqueda i {
+    color: #0ea5e9;
+    font-size: 1.25rem;
+}
+
+.filtro-busqueda input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 0.875rem;
+    color: #1e293b;
+    background: transparent;
+}
+
+.filtro-busqueda input::placeholder {
+    color: #94a3b8;
+}
+
+/* ========================================
+   COLUMNA 2: TAGS DE FILTRO RÁPIDO
+   ======================================== */
+.filtro-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.filtro-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.5rem 0.875rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: #475569;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filtro-tag:hover {
+    border-color: #0ea5e9;
+    color: #0ea5e9;
+    background: #f0f9ff;
+}
+
+.filtro-tag.active {
+    background: #0ea5e9;
+    color: #fff;
+    border-color: #0ea5e9;
+}
+
+.filtro-tag.active i {
+    color: #fff;
+}
+
+.filtro-tag i {
+    font-size: 0.875rem;
+    color: #64748b;
+}
+
+.filtro-tag:hover i {
+    color: #0ea5e9;
+}
+
+/* ========================================
+   COLUMNA 3: ORDENAR
+   ======================================== */
+.filtro-ordenar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+}
+
+.filtro-ordenar i {
+    color: #0ea5e9;
+    font-size: 1.125rem;
+}
+
+.filtro-ordenar .filtro-label {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: #64748b;
+}
+
+.filtro-ordenar select {
+    border: none;
+    outline: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #1e293b;
+    background: transparent;
+    cursor: pointer;
+    padding-right: 0.5rem;
+}
+
+/* ========================================
+   COLUMNA 4: CONTADOR DE PRODUCTOS
+   ======================================== */
+.filtro-contador {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.75rem 1rem;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+}
+
+.filtro-contador i {
+    color: #0ea5e9;
+    font-size: 1.125rem;
+}
+
+.filtro-contador span:first-of-type {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #0ea5e9;
+}
+
+.filtro-contador span:last-of-type {
+    font-size: 0.8125rem;
+    color: #64748b;
+}
+
+/* ========================================
+   COLUMNA 5: RANGO DE PRECIO
+   ======================================== */
+.filtro-precio {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    min-width: 200px;
+}
+
+.filtro-precio-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.filtro-precio-header .filtro-label {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: #64748b;
+}
+
+.filtro-precio-header .filtro-label i {
+    color: #0ea5e9;
+    font-size: 1rem;
+}
+
+.filtro-reset {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #64748b;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filtro-reset:hover {
+    background: #e2e8f0;
+    color: #1e293b;
+}
+
+.filtro-reset i {
+    font-size: 0.875rem;
+}
+
+.filtro-precio-inputs {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.precio-input {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.375rem 0.625rem;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+}
+
+.precio-input span:first-child {
+    color: #94a3b8;
+    font-size: 0.875rem;
+}
+
+.precio-input span:nth-child(2) {
+    font-size: 0.75rem;
+    color: #64748b;
+}
+
+.precio-input input {
+    width: 60px;
+    border: none;
+    outline: none;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #0ea5e9;
+    background: transparent;
+    text-align: right;
+}
+
+.filtro-precio-slider {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.filtro-precio-slider input[type="range"] {
+    width: 100%;
+    height: 6px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: linear-gradient(to right, #0ea5e9 0%, #0ea5e9 100%, #e5e7eb 100%, #e5e7eb 100%);
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.filtro-precio-slider input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: #0ea5e9;
+    border: 3px solid #fff;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(14, 165, 233, 0.3);
+}
+
+.filtro-precio-slider input[type="range"]::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: #0ea5e9;
+    border: 3px solid #fff;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(14, 165, 233, 0.3);
+}
+
+.filtro-precio-slider small {
+    font-size: 0.6875rem;
+    color: #94a3b8;
+    text-align: center;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+@media (max-width: 1200px) {
+    .tienda-filtros-bar {
+        gap: 0.75rem;
+    }
+
+    .filtro-busqueda {
+        max-width: 280px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .tienda-filtros-bar {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .filtro-busqueda {
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .filtro-tags {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .filtro-ordenar,
+    .filtro-contador,
+    .filtro-precio {
+        width: auto;
+    }
+
+    /* Agrupar ordenar, contador y precio en una fila */
+    .tienda-filtros-bar>.filtro-ordenar,
+    .tienda-filtros-bar>.filtro-contador,
+    .tienda-filtros-bar>.filtro-precio {
+        flex: 1;
+        min-width: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .tienda-filtros-bar {
+        padding: 1rem;
+        border-radius: 12px;
+    }
+
+    .filtro-busqueda {
+        padding: 0.625rem 0.875rem;
+    }
+
+    .filtro-tag {
+        padding: 0.375rem 0.625rem;
+        font-size: 0.75rem;
+    }
+
+    .filtro-precio {
+        width: 100%;
+    }
+
+    .filtro-precio-inputs {
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 480px) {
+    .filtro-tags {
+        gap: 0.375rem;
+    }
+
+    .filtro-ordenar,
+    .filtro-contador {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* ========================================
+   MENSAJE SIN RESULTADOS
+   ======================================== */
+.filtros-sin-resultados {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 2rem;
+    text-align: center;
+    background: #f8fafc;
+    border: 2px dashed #e2e8f0;
+    border-radius: 16px;
+    margin: 1.5rem 0;
+    grid-column: 1 / -1;
+}
+
+.filtros-sin-resultados i {
+    font-size: 3rem;
+    color: #94a3b8;
+    margin-bottom: 1rem;
+}
+
+.filtros-sin-resultados h4 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 0.5rem;
+}
+
+.filtros-sin-resultados p {
+    font-size: 0.875rem;
+    color: #94a3b8;
+    margin-bottom: 1rem;
+}
+
+.filtros-sin-resultados button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #fff;
+    background: #0ea5e9;
+    border: none;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filtros-sin-resultados button:hover {
+    background: #0284c7;
+    transform: translateY(-1px);
+}
+
+/* ========================================
+   TOAST NOTIFICATION
+   ======================================== */
+.filtros-toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    padding: 0.75rem 1.5rem;
+    background: #1e293b;
+    color: #fff;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 9999px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 9999;
+}
+
+.filtros-toast.visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* ========================================
+   ANIMACIÓN DEL CONTADOR
+   ======================================== */
+#contadorProductos {
+    transition: all 0.2s ease;
+}
+
+.contador-actualizado {
+    animation: pulse-contador 0.3s ease;
+}
+
+@keyframes pulse-contador {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.3);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* ========================================
+   ANIMACIÓN DE CARDS AL FILTRAR
+   ======================================== */
+.producto-grid-card,
+.producto-scroll-card-overlay {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}

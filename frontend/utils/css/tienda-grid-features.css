@@ -156,3 +156,322 @@
         padding: 0.75rem;
     }
 }
+
+/* ========================================
+   BOTONES HOVER DE PRODUCTOS
+   Estilos para Previsualizar y similares
+   ======================================== */
+
+.producto-grid-hover-btns {
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.producto-hover-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #0ea5e9;
+    color: #fff;
+    border: none;
+}
+
+.producto-hover-btn:hover {
+    background: #0284c7;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+}
+
+.producto-hover-btn i {
+    font-size: 14px;
+}
+
+/* Botón outline */
+.producto-hover-btn-outline {
+    background: #fff;
+    color: #0ea5e9;
+    border: 1.5px solid #0ea5e9;
+}
+
+.producto-hover-btn-outline:hover {
+    background: #f0f9ff;
+    color: #0284c7;
+    border-color: #0284c7;
+    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.15);
+}
+
+/* Botones móvil */
+.producto-grid-mobile-actions {
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.producto-mobile-action {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    background: #f0f9ff;
+    color: #0ea5e9;
+    border: 1px solid #bae6fd;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.producto-mobile-action:hover {
+    background: #0ea5e9;
+    color: #fff;
+    border-color: #0ea5e9;
+}
+
+.producto-mobile-action i {
+    font-size: 16px;
+}
+
+/* ========================================
+   BOTONES OVERLAY SCROLL PRODUCTOS
+   Estilos para el carrusel de productos
+   ======================================== */
+
+.producto-scroll-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0.75rem;
+    background: linear-gradient(to top, rgba(255, 255, 255, 0.98) 70%, transparent);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    pointer-events: none;
+    z-index: 20;
+}
+
+.producto-scroll-card-overlay:hover .producto-scroll-overlay {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+/* Botones overlay para productos secundarios */
+.producto-scroll-overlay-btns {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0.75rem;
+    background: linear-gradient(to top, rgba(255, 255, 255, 0.98) 70%, transparent);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    pointer-events: none;
+    z-index: 20;
+}
+
+.producto-scroll-card-overlay:hover .producto-scroll-overlay-btns {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.producto-overlay-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #0ea5e9;
+    color: #fff;
+    border: none;
+}
+
+.producto-overlay-btn:hover {
+    background: #0284c7;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+}
+
+.producto-overlay-btn i {
+    font-size: 14px;
+}
+
+/* Botón outline */
+.producto-overlay-btn-outline {
+    background: #fff;
+    color: #0ea5e9;
+    border: 1.5px solid #0ea5e9;
+}
+
+.producto-overlay-btn-outline:hover {
+    background: #f0f9ff;
+    color: #0284c7;
+    border-color: #0284c7;
+    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.15);
+}
+
+/* Botón carrito flotante - Diseño sutil */
+.producto-scroll-cart,
+.producto-grid-cart-icon {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    background: #fff;
+    color: #0ea5e9;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+    z-index: 5;
+    opacity: 0;
+    transform: translateY(5px);
+}
+
+/* Mostrar al hacer hover en la card */
+.producto-grid-card:hover .producto-grid-cart-icon,
+.producto-scroll-card:hover .producto-scroll-cart,
+.producto-scroll-card-overlay:hover .producto-scroll-cart {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.producto-scroll-cart:hover,
+.producto-grid-cart-icon:hover {
+    background: #0ea5e9;
+    color: #fff;
+    border-color: #0ea5e9;
+    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.35);
+}
+
+.producto-scroll-cart i,
+.producto-grid-cart-icon i {
+    font-size: 16px;
+}
+
+/* ========================================
+   CORRECCIÓN DE PRECIOS
+   Unificación de colores a Sky-500
+   ======================================== */
+
+.producto-scroll-precios {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+}
+
+.producto-scroll-precio {
+    color: #0ea5e9 !important;
+    /* Sky-500 */
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.producto-scroll-precio-old {
+    color: #94a3b8;
+    /* Slate-400 */
+    text-decoration: line-through;
+    font-size: 0.75rem;
+}
+
+/* ========================================
+   WRAPPER DE IMAGEN PARA PRODUCTOS SCROLL
+   Necesario para posicionar botones overlay
+   ======================================== */
+
+.producto-scroll-imagen-wrapper {
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    background: #f8fafc;
+    aspect-ratio: 1 / 1;
+}
+
+.producto-scroll-imagen-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.producto-scroll-card-overlay:hover .producto-scroll-imagen-wrapper img {
+    transform: scale(1.05);
+}
+
+/* Botones overlay dentro del wrapper */
+.producto-scroll-imagen-wrapper .producto-scroll-overlay-btns {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0.5rem;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent);
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 0.5rem;
+    opacity: 0;
+    transform: translateY(100%);
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.producto-scroll-card-overlay:hover .producto-scroll-imagen-wrapper .producto-scroll-overlay-btns {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Botones circulares dentro del overlay */
+.producto-scroll-imagen-wrapper .producto-overlay-btn {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border-radius: 50%;
+    background: #fff;
+    color: #0ea5e9;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.producto-scroll-imagen-wrapper .producto-overlay-btn:hover {
+    background: #0ea5e9;
+    color: #fff;
+    transform: scale(1.1);
+}
+
+.producto-scroll-imagen-wrapper .producto-overlay-btn i {
+    font-size: 16px;
+}

@@ -18,6 +18,97 @@ $formularioAvanzado = ($plan === 'premium');
 ?>
 
 <div class="tienda-tabs">
+  
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- BARRA DE FILTROS DE PRODUCTOS (ARRIBA DE TABS) -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="tienda-filtros-bar-superior">
+    <!-- Fila 1: Búsqueda + Filtros rápidos + Ordenar -->
+    <div class="filtros-fila-principal">
+      <!-- Búsqueda -->
+      <div class="filtro-busqueda">
+        <i class="ph ph-magnifying-glass"></i>
+        <input type="text" id="filtroBuscar" placeholder="Buscar por nombre, SKU, categoría...">
+        <button type="button" id="limpiarBusqueda" class="btn-limpiar-busqueda" style="display: none;" title="Limpiar búsqueda">
+          <i class="ph ph-x"></i>
+        </button>
+      </div>
+      
+      <!-- Tags de filtro rápido -->
+      <div class="filtro-tags">
+        <button class="filtro-tag" data-filtro="oferta">
+          <i class="ph ph-tag"></i>
+          Ofertas
+        </button>
+        <button class="filtro-tag" data-filtro="destacado">
+          <i class="ph ph-star"></i>
+          Destacados
+        </button>
+        <button class="filtro-tag" data-filtro="bio">
+          <i class="ph ph-leaf"></i>
+          Bio
+        </button>
+      </div>
+      
+      <!-- Ordenar -->
+      <div class="filtro-ordenar">
+        <i class="ph ph-funnel"></i>
+        <span class="filtro-label">Ordenar</span>
+        <select id="filtroOrdenar">
+          <option value="recientes">Más recientes</option>
+          <option value="precio-asc">Precio: menor a mayor</option>
+          <option value="precio-desc">Precio: mayor a menor</option>
+          <option value="nombre">Nombre A-Z</option>
+          <option value="popular">Más vendidos</option>
+        </select>
+      </div>
+      
+      <!-- Botón para mostrar/ocultar filtros avanzados -->
+      <button class="filtro-toggle-btn" id="toggleFiltrosAvanzados">
+        <i class="ph ph-sliders-horizontal"></i>
+        <span>Filtros</span>
+        <i class="ph ph-caret-down toggle-icon"></i>
+      </button>
+    </div>
+    
+    <!-- Fila 2: Filtros avanzados (desplegable) -->
+    <div class="filtros-fila-avanzados" id="filtrosAvanzados" style="display: none;">
+      <!-- Contador de productos -->
+      <div class="filtro-contador">
+        <i class="ph ph-list-bullets"></i>
+        <span id="contadorProductos"><?php echo count($productos); ?></span>
+        <span>productos</span>
+      </div>
+      
+      <!-- Rango de precio -->
+      <div class="filtro-precio">
+        <div class="filtro-precio-header">
+          <span class="filtro-label"><i class="ph ph-currency-circle-dollar"></i> Precio</span>
+          <button class="filtro-reset" id="resetFiltros">
+            <i class="ph ph-arrow-counter-clockwise"></i>
+            Reset
+          </button>
+        </div>
+        <div class="filtro-precio-inputs">
+          <div class="precio-input">
+            <span>−</span>
+            <span>Min:</span>
+            <input type="number" id="precioMin" value="0" min="0">
+          </div>
+          <div class="precio-input">
+            <span>+</span>
+            <span>Max:</span>
+            <input type="number" id="precioMax" value="500" min="0">
+          </div>
+        </div>
+        <div class="filtro-precio-slider">
+          <input type="range" id="precioSlider" min="0" max="500" value="500">
+          <small>Arrastra para filtrar (en tiempo real)</small>
+        </div>
+      </div>
+    </div>
+  </div>
+  
   <!-- Header de Tabs - Estilo Arrow Nav -->
   <div class="tienda-tabs-header arrow-style shadow-sm">
     <div class="tienda-tabs-nav">
@@ -59,7 +150,7 @@ $formularioAvanzado = ($plan === 'premium');
           <div class="producto-scroll-card-overlay">
             <!-- Imagen del producto con overlay de botones -->
             <div class="producto-scroll-imagen">
-              <a href="producto.php?id=<?php echo $producto['id']; ?>">
+              <a href="producto.php?id=<?php echo $producto['id']; ?>" class="producto-scroll-img-link">
                 <img 
                   src="<?php echo htmlspecialchars($producto['imagen']); ?>" 
                   alt="<?php echo htmlspecialchars($producto['nombre']); ?>"
@@ -92,13 +183,13 @@ $formularioAvanzado = ($plan === 'premium');
                 <i class="ph ph-shopping-cart-simple"></i>
               </button>
               
-              <!-- Overlay con botones (aparece al hover) -->
+              <!-- Overlay con botones (aparece al hover) - FUERA del enlace -->
               <div class="producto-scroll-overlay">
-                <button class="producto-overlay-btn" onclick="vistaRapidaProducto(<?php echo $producto['id']; ?>)">
+                <button type="button" class="producto-overlay-btn" onclick="event.preventDefault(); event.stopPropagation(); vistaRapidaProducto(<?php echo $producto['id']; ?>)">
                   <i class="ph ph-eye"></i>
                   Previsualizar
                 </button>
-                <button class="producto-overlay-btn producto-overlay-btn-outline">
+                <button type="button" class="producto-overlay-btn producto-overlay-btn-outline">
                   <i class="ph ph-squares-four"></i>
                   Artículos similares
                 </button>
@@ -156,7 +247,7 @@ $formularioAvanzado = ($plan === 'premium');
           <div class="producto-scroll-card-overlay">
             <!-- Imagen del producto con overlay de botones -->
             <div class="producto-scroll-imagen">
-              <a href="producto.php?id=<?php echo $producto['id']; ?>">
+              <a href="producto.php?id=<?php echo $producto['id']; ?>" class="producto-scroll-img-link">
                 <img 
                   src="<?php echo htmlspecialchars($producto['imagen']); ?>" 
                   alt="<?php echo htmlspecialchars($producto['nombre']); ?>"
@@ -189,13 +280,13 @@ $formularioAvanzado = ($plan === 'premium');
                 <i class="ph ph-shopping-cart-simple"></i>
               </button>
               
-              <!-- Overlay con botones (aparece al hover) -->
+              <!-- Overlay con botones (aparece al hover) - FUERA del enlace -->
               <div class="producto-scroll-overlay">
-                <button class="producto-overlay-btn" onclick="vistaRapidaProducto(<?php echo $producto['id']; ?>)">
+                <button type="button" class="producto-overlay-btn" onclick="event.preventDefault(); event.stopPropagation(); vistaRapidaProducto(<?php echo $producto['id']; ?>)">
                   <i class="ph ph-eye"></i>
                   Previsualizar
                 </button>
-                <button class="producto-overlay-btn producto-overlay-btn-outline">
+                <button type="button" class="producto-overlay-btn producto-overlay-btn-outline">
                   <i class="ph ph-squares-four"></i>
                   Artículos similares
                 </button>
@@ -299,7 +390,7 @@ $formularioAvanzado = ($plan === 'premium');
     <!-- Header de sección -->
     <div class="flex items-center justify-between mb-6">
       <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-        <svg class="w-5 h-5 text-[#4bcfab]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <svg class="w-5 h-5 text-[#38bdf8]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
           <circle cx="12" cy="10" r="3"/>
         </svg>
@@ -343,7 +434,7 @@ $formularioAvanzado = ($plan === 'premium');
           <!-- Badge Principal (si aplica) -->
           <?php if (!empty($sucursal['es_principal'])): ?>
           <div class="absolute top-3 left-3">
-            <span class="px-3 py-1 bg-gradient-to-r from-[#a4d534] to-[#4bcfab] text-white text-xs font-bold rounded-full shadow-lg flex items-center gap-1">
+            <span class="px-3 py-1 bg-gradient-to-r from-[#0ea5e9] to-[#38bdf8] text-white text-xs font-bold rounded-full shadow-lg flex items-center gap-1">
               <svg class="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
               </svg>
@@ -357,7 +448,7 @@ $formularioAvanzado = ($plan === 'premium');
         <div class="p-5">
           <!-- Nombre -->
           <h4 class="text-lg font-bold text-slate-800 mb-3 flex items-center gap-2">
-            <svg class="w-5 h-5 text-[#4bcfab]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg class="w-5 h-5 text-[#38bdf8]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
               <polyline points="9,22 9,12 15,12 15,22"/>
             </svg>
@@ -391,7 +482,7 @@ $formularioAvanzado = ($plan === 'premium');
               <svg class="w-4 h-4 text-slate-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
               </svg>
-              <a href="tel:<?php echo htmlspecialchars($sucursal['telefono']); ?>" class="hover:text-[#4bcfab] transition-colors">
+              <a href="tel:<?php echo htmlspecialchars($sucursal['telefono']); ?>" class="hover:text-[#38bdf8] transition-colors">
                 <?php echo htmlspecialchars($sucursal['telefono']); ?>
               </a>
             </div>
@@ -412,7 +503,7 @@ $formularioAvanzado = ($plan === 'premium');
           <div class="flex gap-2 mt-4 pt-4 border-t border-slate-100">
             <?php if (!empty($sucursal['google_maps_url'])): ?>
             <a href="<?php echo htmlspecialchars($sucursal['google_maps_url']); ?>" target="_blank" 
-               class="flex-1 py-2 px-3 bg-gradient-to-r from-[#a4d534] to-[#4bcfab] text-white text-xs font-semibold rounded-lg text-center hover:shadow-lg hover:shadow-[#4bcfab]/30 transition-all flex items-center justify-center gap-1">
+               class="flex-1 py-2 px-3 bg-gradient-to-r from-[#0ea5e9] to-[#38bdf8] text-white text-xs font-semibold rounded-lg text-center hover:shadow-lg hover:shadow-[#38bdf8]/30 transition-all flex items-center justify-center gap-1">
               <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
                 <circle cx="12" cy="10" r="3"/>
@@ -423,7 +514,7 @@ $formularioAvanzado = ($plan === 'premium');
             
             <?php if (!empty($sucursal['telefono'])): ?>
             <a href="tel:<?php echo htmlspecialchars($sucursal['telefono']); ?>" 
-               class="py-2 px-3 border border-[#5bb5d9] text-[#5bb5d9] text-xs font-semibold rounded-lg text-center hover:bg-[#5bb5d9] hover:text-white transition-all flex items-center justify-center gap-1">
+               class="py-2 px-3 border border-[#7dd3fc] text-[#7dd3fc] text-xs font-semibold rounded-lg text-center hover:bg-[#7dd3fc] hover:text-white transition-all flex items-center justify-center gap-1">
               <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
               </svg>
@@ -569,14 +660,14 @@ $formularioAvanzado = ($plan === 'premium');
         
         <div class="p-2">
           <!-- Item de conversación activa -->
-          <div class="flex items-center gap-3 p-3 bg-white rounded-xl border-l-4 border-[#4bcfab] shadow-sm">
+          <div class="flex items-center gap-3 p-3 bg-white rounded-xl border-l-4 border-[#38bdf8] shadow-sm">
             <img src="<?php echo htmlspecialchars($tienda['logo']); ?>" alt="Logo" class="w-10 h-10 rounded-full object-cover border-2 border-white shadow">
             <div class="flex-1 min-w-0">
               <div class="flex items-center justify-between mb-0.5">
                 <span class="font-semibold text-sm text-slate-800 truncate mensaje-item-nombre"><?php echo htmlspecialchars($tienda['nombre']); ?></span>
                 <span class="text-xs text-slate-400"><?php echo date('H:i'); ?></span>
               </div>
-              <p class="text-xs text-[#4bcfab] font-medium mensaje-item-preview">[Nuevo Mensaje]</p>
+              <p class="text-xs text-[#38bdf8] font-medium mensaje-item-preview">[Nuevo Mensaje]</p>
             </div>
           </div>
         </div>
@@ -597,7 +688,7 @@ $formularioAvanzado = ($plan === 'premium');
             <div>
               <h3 class="font-bold text-slate-800 flex items-center gap-2">
                 <?php echo htmlspecialchars($tienda['nombre']); ?>
-                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="#4bcfab">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="#38bdf8">
                   <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
                 </svg>
               </h3>
@@ -613,7 +704,7 @@ $formularioAvanzado = ($plan === 'premium');
               </svg>
             </a>
             <a href="mailto:<?php echo htmlspecialchars($tienda['correo'] ?? ''); ?>" 
-               class="p-2 bg-[#5bb5d9] text-white rounded-full hover:bg-[#4a9ec7] transition-colors" title="Email">
+               class="p-2 bg-[#7dd3fc] text-white rounded-full hover:bg-[#4a9ec7] transition-colors" title="Email">
               <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="2" y="4" width="20" height="16" rx="2"/>
                 <path d="M22 6L12 13L2 6"/>
@@ -631,13 +722,13 @@ $formularioAvanzado = ($plan === 'premium');
               <div>
                 <label class="block text-sm font-medium text-slate-700 mb-1.5">Nombre completo *</label>
                 <input type="text" name="nombre" required
-                       class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-[#4bcfab]/30 focus:border-[#4bcfab] outline-none transition-all"
+                       class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-[#38bdf8]/30 focus:border-[#38bdf8] outline-none transition-all"
                        placeholder="Tu nombre">
               </div>
               <div>
                 <label class="block text-sm font-medium text-slate-700 mb-1.5">Correo electrónico *</label>
                 <input type="email" name="correo" required
-                       class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-[#4bcfab]/30 focus:border-[#4bcfab] outline-none transition-all"
+                       class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-[#38bdf8]/30 focus:border-[#38bdf8] outline-none transition-all"
                        placeholder="tucorreo@ejemplo.com">
               </div>
             </div>
@@ -651,7 +742,7 @@ $formularioAvanzado = ($plan === 'premium');
                     🇵🇪 +51
                   </span>
                   <input type="tel" name="telefono" id="telefono-peru"
-                         class="flex-1 px-4 py-2.5 bg-white border border-slate-200 rounded-r-lg text-sm focus:ring-2 focus:ring-[#4bcfab]/30 focus:border-[#4bcfab] outline-none transition-all"
+                         class="flex-1 px-4 py-2.5 bg-white border border-slate-200 rounded-r-lg text-sm focus:ring-2 focus:ring-[#38bdf8]/30 focus:border-[#38bdf8] outline-none transition-all"
                          placeholder="999 999 999"
                          maxlength="11"
                          oninput="formatearTelefonoPeru(this)">
@@ -661,7 +752,7 @@ $formularioAvanzado = ($plan === 'premium');
               <div>
                 <label class="block text-sm font-medium text-slate-700 mb-1.5">Asunto del mensaje *</label>
                 <select name="asunto" id="asunto-premium" required
-                        class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-[#4bcfab]/30 focus:border-[#4bcfab] outline-none transition-all cursor-pointer">
+                        class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-[#38bdf8]/30 focus:border-[#38bdf8] outline-none transition-all cursor-pointer">
                   <option value="">Selecciona un asunto</option>
                   <option value="consulta">📋 Consulta general</option>
                   <option value="cotizacion">💰 Solicitar cotización</option>
@@ -679,7 +770,7 @@ $formularioAvanzado = ($plan === 'premium');
               
               <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <!-- Opción 1: Subir archivo local -->
-                <div class="bg-white border-2 border-dashed border-slate-200 rounded-xl p-4 text-center hover:border-[#4bcfab]/50 hover:bg-[#4bcfab]/5 transition-all cursor-pointer"
+                <div class="bg-white border-2 border-dashed border-slate-200 rounded-xl p-4 text-center hover:border-[#38bdf8]/50 hover:bg-[#38bdf8]/5 transition-all cursor-pointer"
                      onclick="document.getElementById('contact_file').click()">
                   <input type="file" id="contact_file" name="archivo" class="hidden" accept="image/*,video/*,audio/*,.pdf" onchange="validarArchivo(this)">
                   <svg class="w-8 h-8 mx-auto text-slate-400 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -777,7 +868,7 @@ $formularioAvanzado = ($plan === 'premium');
             
             <!-- Botón enviar -->
             <button type="submit" id="btn-resolver-premium"
-                    class="w-full py-3 px-6 bg-gradient-to-r from-[#a4d534] to-[#4bcfab] text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-[#4bcfab]/30 transition-all duration-300 flex items-center justify-center gap-2">
+                    class="w-full py-3 px-6 bg-gradient-to-r from-[#0ea5e9] to-[#38bdf8] text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-[#38bdf8]/30 transition-all duration-300 flex items-center justify-center gap-2">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M22 2L11 13M22 2L15 22L11 13M22 2L2 9L11 13"/>
               </svg>
@@ -793,7 +884,7 @@ $formularioAvanzado = ($plan === 'premium');
             <!-- Los mensajes se inyectarán aquí -->
           </div>
           <div class="mt-4 p-4 bg-white/80 backdrop-blur rounded-xl text-center max-w-2xl mx-auto border border-slate-100">
-            <svg class="w-12 h-12 mx-auto text-[#4bcfab] mb-2" viewBox="0 0 24 24" fill="currentColor">
+            <svg class="w-12 h-12 mx-auto text-[#38bdf8] mb-2" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
             </svg>
             <p class="text-slate-700 font-medium">¡Mensaje enviado!</p>
@@ -865,14 +956,14 @@ $formularioAvanzado = ($plan === 'premium');
         
         if (esValido) {
           status.innerHTML = '✅ Enlace de Google Drive válido';
-          status.className = 'text-xs text-[#4bcfab] mt-1 font-medium';
-          input.classList.add('border-[#4bcfab]', 'bg-[#4bcfab]/5');
+          status.className = 'text-xs text-[#38bdf8] mt-1 font-medium';
+          input.classList.add('border-[#38bdf8]', 'bg-[#38bdf8]/5');
           input.classList.remove('border-slate-200');
         } else {
           status.innerHTML = '❌ Este no parece ser un enlace válido de Google Drive';
           status.className = 'text-xs text-rose-500 mt-1';
           input.classList.add('border-rose-300');
-          input.classList.remove('border-slate-200', 'border-[#4bcfab]', 'bg-[#4bcfab]/5');
+          input.classList.remove('border-slate-200', 'border-[#38bdf8]', 'bg-[#38bdf8]/5');
         }
       }
       
@@ -922,7 +1013,7 @@ $formularioAvanzado = ($plan === 'premium');
         
         if (file) {
           display.innerText = '✓ ' + file.name;
-          display.classList.add('text-[#4bcfab]', 'font-medium');
+          display.classList.add('text-[#38bdf8]', 'font-medium');
           display.classList.remove('text-slate-500');
           
           // Validar 2MB (2 * 1024 * 1024 bytes)
@@ -931,11 +1022,11 @@ $formularioAvanzado = ($plan === 'premium');
             warning.classList.add('text-rose-500', 'font-bold');
             warning.innerHTML = '⚠️ Archivo muy grande. Máximo 2MB permitido.';
             display.innerText = 'Arrastra un archivo o haz clic para seleccionar';
-            display.classList.remove('text-[#4bcfab]', 'font-medium');
+            display.classList.remove('text-[#38bdf8]', 'font-medium');
             display.classList.add('text-slate-500');
             input.value = "";
           } else {
-            warning.classList.add('text-[#4bcfab]');
+            warning.classList.add('text-[#38bdf8]');
             warning.classList.remove('text-rose-500', 'font-bold', 'text-slate-400');
             warning.innerText = '✓ Archivo aceptado';
           }
@@ -991,9 +1082,9 @@ $formularioAvanzado = ($plan === 'premium');
               const hora = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
 
               chatContainer.innerHTML = `
-                <div class="bg-[#4bcfab]/10 border border-[#4bcfab]/20 rounded-xl p-4">
+                <div class="bg-[#38bdf8]/10 border border-[#38bdf8]/20 rounded-xl p-4">
                   <div class="flex items-start gap-3">
-                    <div class="w-10 h-10 bg-gradient-to-br from-[#a4d534] to-[#4bcfab] rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                    <div class="w-10 h-10 bg-gradient-to-br from-[#0ea5e9] to-[#38bdf8] rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
                       ${nombre.charAt(0).toUpperCase()}
                     </div>
                     <div class="flex-1">
@@ -1002,7 +1093,7 @@ $formularioAvanzado = ($plan === 'premium');
                         <span class="text-xs text-slate-400">${hora}</span>
                       </div>
                       <p class="text-sm text-slate-600 mb-2">
-                        <span class="inline-block bg-[#4bcfab]/20 text-[#38b89a] text-xs font-medium px-2 py-0.5 rounded-full">${asunto}</span>
+                        <span class="inline-block bg-[#38bdf8]/20 text-[#38b89a] text-xs font-medium px-2 py-0.5 rounded-full">${asunto}</span>
                       </p>
                       <div class="text-sm text-slate-700">${mensajeUser}</div>
                     </div>
@@ -1121,31 +1212,31 @@ $formularioAvanzado = ($plan === 'premium');
           <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2">
             <!-- Icono de gráfico estilo Lyrium -->
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <rect x="3" y="12" width="4" height="9" rx="1" fill="#4bcfab"/>
-              <rect x="10" y="8" width="4" height="13" rx="1" fill="#5bb5d9"/>
-              <rect x="17" y="4" width="4" height="17" rx="1" fill="#a4d534"/>
+              <rect x="3" y="12" width="4" height="9" rx="1" fill="#38bdf8"/>
+              <rect x="10" y="8" width="4" height="13" rx="1" fill="#7dd3fc"/>
+              <rect x="17" y="4" width="4" height="17" rx="1" fill="#0ea5e9"/>
             </svg>
             Estadísticas
           </h4>
           
           <div class="space-y-2">
             <!-- Compras Verificadas - Verde Lima Lyrium -->
-            <div class="flex items-center gap-2.5 p-2.5 bg-gradient-to-r from-[#a4d534]/10 to-[#4bcfab]/10 rounded-lg border border-[#a4d534]/20 hover:border-[#a4d534]/40 transition-all">
-              <div class="w-9 h-9 bg-gradient-to-br from-[#a4d534] to-[#6cb82b] rounded-lg flex items-center justify-center flex-shrink-0 shadow-md shadow-[#a4d534]/25">
+            <div class="flex items-center gap-2.5 p-2.5 bg-gradient-to-r from-[#0ea5e9]/10 to-[#38bdf8]/10 rounded-lg border border-[#0ea5e9]/20 hover:border-[#0ea5e9]/40 transition-all">
+              <div class="w-9 h-9 bg-gradient-to-br from-[#0ea5e9] to-[#0284c7] rounded-lg flex items-center justify-center flex-shrink-0 shadow-md shadow-[#0ea5e9]/25">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                   <circle cx="12" cy="12" r="9" stroke="white" stroke-width="2"/>
                   <path d="M8 12L11 15L16 9" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
               </div>
               <div class="flex-1 min-w-0">
-                <p class="text-[10px] text-[#6cb82b] font-semibold uppercase tracking-wide">Compras Verificadas</p>
+                <p class="text-[10px] text-[#0284c7] font-semibold uppercase tracking-wide">Compras Verificadas</p>
                 <p class="text-base font-bold text-slate-800"><?php echo $comprasVerificadas; ?></p>
               </div>
             </div>
             
             <!-- Recomendación - Turquesa Lyrium -->
-            <div class="flex items-center gap-2.5 p-2.5 bg-gradient-to-r from-[#4bcfab]/10 to-[#5bb5d9]/10 rounded-lg border border-[#4bcfab]/20 hover:border-[#4bcfab]/40 transition-all">
-              <div class="w-9 h-9 bg-gradient-to-br from-[#4bcfab] to-[#38b89a] rounded-lg flex items-center justify-center flex-shrink-0 shadow-md shadow-[#4bcfab]/25">
+            <div class="flex items-center gap-2.5 p-2.5 bg-gradient-to-r from-[#38bdf8]/10 to-[#7dd3fc]/10 rounded-lg border border-[#38bdf8]/20 hover:border-[#38bdf8]/40 transition-all">
+              <div class="w-9 h-9 bg-gradient-to-br from-[#38bdf8] to-[#38b89a] rounded-lg flex items-center justify-center flex-shrink-0 shadow-md shadow-[#38bdf8]/25">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                   <path d="M14 9V5C14 3.9 13.1 3 12 3C10.9 3 10 3.9 10 5V9" stroke="white" stroke-width="2" stroke-linecap="round"/>
                   <path d="M18 9H6C4.9 9 4 9.9 4 11V12C4 15.3 6.7 18 10 18H14C17.3 18 20 15.3 20 12V11C20 9.9 19.1 9 18 9Z" stroke="white" stroke-width="2"/>
@@ -1159,8 +1250,8 @@ $formularioAvanzado = ($plan === 'premium');
             </div>
             
             <!-- Tiempo de Respuesta - Azul Cielo Lyrium -->
-            <div class="flex items-center gap-2.5 p-2.5 bg-gradient-to-r from-[#5bb5d9]/10 to-[#4a9ec7]/10 rounded-lg border border-[#5bb5d9]/20 hover:border-[#5bb5d9]/40 transition-all">
-              <div class="w-9 h-9 bg-gradient-to-br from-[#5bb5d9] to-[#4a9ec7] rounded-lg flex items-center justify-center flex-shrink-0 shadow-md shadow-[#5bb5d9]/25">
+            <div class="flex items-center gap-2.5 p-2.5 bg-gradient-to-r from-[#7dd3fc]/10 to-[#4a9ec7]/10 rounded-lg border border-[#7dd3fc]/20 hover:border-[#7dd3fc]/40 transition-all">
+              <div class="w-9 h-9 bg-gradient-to-br from-[#7dd3fc] to-[#4a9ec7] rounded-lg flex items-center justify-center flex-shrink-0 shadow-md shadow-[#7dd3fc]/25">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                   <circle cx="12" cy="12" r="9" stroke="white" stroke-width="2"/>
                   <path d="M12 7V12L15 15" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -1173,8 +1264,8 @@ $formularioAvanzado = ($plan === 'premium');
             </div>
             
             <!-- Total de Ventas - Gradiente Lyrium Completo -->
-            <div class="flex items-center gap-2.5 p-2.5 bg-gradient-to-r from-[#a4d534]/10 via-[#4bcfab]/10 to-[#5bb5d9]/10 rounded-lg border border-[#4bcfab]/20 hover:border-[#4bcfab]/40 transition-all">
-              <div class="w-9 h-9 bg-gradient-to-br from-[#a4d534] via-[#4bcfab] to-[#5bb5d9] rounded-lg flex items-center justify-center flex-shrink-0 shadow-md shadow-[#4bcfab]/25">
+            <div class="flex items-center gap-2.5 p-2.5 bg-gradient-to-r from-[#0ea5e9]/10 via-[#38bdf8]/10 to-[#7dd3fc]/10 rounded-lg border border-[#38bdf8]/20 hover:border-[#38bdf8]/40 transition-all">
+              <div class="w-9 h-9 bg-gradient-to-br from-[#0ea5e9] via-[#38bdf8] to-[#7dd3fc] rounded-lg flex items-center justify-center flex-shrink-0 shadow-md shadow-[#38bdf8]/25">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                   <path d="M6 6H8L10 18H18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M10 14H17.5L19 8H8" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -1198,9 +1289,9 @@ $formularioAvanzado = ($plan === 'premium');
               <path d="M12 2L14.5 6.5L19.5 7L15.5 11L16.5 16L12 13.5L7.5 16L8.5 11L4.5 7L9.5 6.5L12 2Z" fill="url(#trust-badge-gradient)"/>
               <defs>
                 <linearGradient id="trust-badge-gradient" x1="4" y1="2" x2="20" y2="18">
-                  <stop offset="0%" stop-color="#a4d534"/>
-                  <stop offset="50%" stop-color="#4bcfab"/>
-                  <stop offset="100%" stop-color="#5bb5d9"/>
+                  <stop offset="0%" stop-color="#0ea5e9"/>
+                  <stop offset="50%" stop-color="#38bdf8"/>
+                  <stop offset="100%" stop-color="#7dd3fc"/>
                 </linearGradient>
               </defs>
             </svg>
@@ -1210,19 +1301,19 @@ $formularioAvanzado = ($plan === 'premium');
           <div class="grid grid-cols-2 gap-2">
             
             <!-- 1. Reseñas Reales -->
-            <div class="group flex flex-col items-center gap-2 p-2.5 bg-gradient-to-br from-[#a4d534]/5 to-[#4bcfab]/10 rounded-xl border border-[#a4d534]/15 hover:border-[#a4d534]/40 hover:shadow-lg transition-all duration-300 cursor-pointer">
-              <div class="w-10 h-10 bg-gradient-to-br from-[#a4d534] to-[#6cb82b] rounded-xl flex items-center justify-center shadow-md shadow-[#a4d534]/20 group-hover:scale-110 transition-transform duration-300">
+            <div class="group flex flex-col items-center gap-2 p-2.5 bg-gradient-to-br from-[#0ea5e9]/5 to-[#38bdf8]/10 rounded-xl border border-[#0ea5e9]/15 hover:border-[#0ea5e9]/40 hover:shadow-lg transition-all duration-300 cursor-pointer">
+              <div class="w-10 h-10 bg-gradient-to-br from-[#0ea5e9] to-[#0284c7] rounded-xl flex items-center justify-center shadow-md shadow-[#0ea5e9]/20 group-hover:scale-110 transition-transform duration-300">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                   <path d="M21 11.5C21 16.75 16.75 21 11.5 21C10 21 8.5 20.7 7.2 20L3 21L4 17C3.4 15.6 3 14.1 3 12.5C3 7.25 7.25 3 12.5 3H13" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M19 2L20 5L23 6L20 7L19 10L18 7L15 6L18 5L19 2Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="white"/>
                 </svg>
               </div>
-              <span class="text-[10px] font-bold text-[#6cb82b] text-center uppercase tracking-wide leading-tight">Reseñas<br/>Reales</span>
+              <span class="text-[10px] font-bold text-[#0284c7] text-center uppercase tracking-wide leading-tight">Reseñas<br/>Reales</span>
             </div>
             
             <!-- 2. Respuestas Rápidas -->
-            <div class="group flex flex-col items-center gap-2 p-2.5 bg-gradient-to-br from-[#4bcfab]/5 to-[#5bb5d9]/10 rounded-xl border border-[#4bcfab]/15 hover:border-[#4bcfab]/40 hover:shadow-lg transition-all duration-300 cursor-pointer">
-              <div class="w-10 h-10 bg-gradient-to-br from-[#4bcfab] to-[#38b89a] rounded-xl flex items-center justify-center shadow-md shadow-[#4bcfab]/20 group-hover:scale-110 transition-transform duration-300">
+            <div class="group flex flex-col items-center gap-2 p-2.5 bg-gradient-to-br from-[#38bdf8]/5 to-[#7dd3fc]/10 rounded-xl border border-[#38bdf8]/15 hover:border-[#38bdf8]/40 hover:shadow-lg transition-all duration-300 cursor-pointer">
+              <div class="w-10 h-10 bg-gradient-to-br from-[#38bdf8] to-[#38b89a] rounded-xl flex items-center justify-center shadow-md shadow-[#38bdf8]/20 group-hover:scale-110 transition-transform duration-300">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                   <path d="M20 4H4C2.9 4 2 4.9 2 6V15C2 16.1 2.9 17 4 17H7L12 22L12 17H20C21.1 17 22 16.1 22 15V6C22 4.9 21.1 4 20 4Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M13 7L11 11H14L12 15" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -1232,8 +1323,8 @@ $formularioAvanzado = ($plan === 'premium');
             </div>
             
             <!-- 3. Vendedor Confiable -->
-            <div class="group flex flex-col items-center gap-2 p-2.5 bg-gradient-to-br from-[#5bb5d9]/5 to-[#4a9ec7]/10 rounded-xl border border-[#5bb5d9]/15 hover:border-[#5bb5d9]/40 hover:shadow-lg transition-all duration-300 cursor-pointer">
-              <div class="w-10 h-10 bg-gradient-to-br from-[#5bb5d9] to-[#4a9ec7] rounded-xl flex items-center justify-center shadow-md shadow-[#5bb5d9]/20 group-hover:scale-110 transition-transform duration-300">
+            <div class="group flex flex-col items-center gap-2 p-2.5 bg-gradient-to-br from-[#7dd3fc]/5 to-[#4a9ec7]/10 rounded-xl border border-[#7dd3fc]/15 hover:border-[#7dd3fc]/40 hover:shadow-lg transition-all duration-300 cursor-pointer">
+              <div class="w-10 h-10 bg-gradient-to-br from-[#7dd3fc] to-[#4a9ec7] rounded-xl flex items-center justify-center shadow-md shadow-[#7dd3fc]/20 group-hover:scale-110 transition-transform duration-300">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                   <circle cx="10" cy="7" r="4" stroke="white" stroke-width="2"/>
                   <path d="M4 21V18C4 15.8 5.8 14 8 14H12" stroke="white" stroke-width="2" stroke-linecap="round"/>
@@ -1245,15 +1336,15 @@ $formularioAvanzado = ($plan === 'premium');
             </div>
             
             <!-- 4. Transacciones Seguras -->
-            <div class="group flex flex-col items-center gap-2 p-2.5 bg-gradient-to-br from-[#a4d534]/5 via-[#4bcfab]/5 to-[#5bb5d9]/10 rounded-xl border border-[#4bcfab]/15 hover:border-[#4bcfab]/40 hover:shadow-lg transition-all duration-300 cursor-pointer">
-              <div class="w-10 h-10 bg-gradient-to-br from-[#a4d534] via-[#4bcfab] to-[#5bb5d9] rounded-xl flex items-center justify-center shadow-md shadow-[#4bcfab]/20 group-hover:scale-110 transition-transform duration-300">
+            <div class="group flex flex-col items-center gap-2 p-2.5 bg-gradient-to-br from-[#0ea5e9]/5 via-[#38bdf8]/5 to-[#7dd3fc]/10 rounded-xl border border-[#38bdf8]/15 hover:border-[#38bdf8]/40 hover:shadow-lg transition-all duration-300 cursor-pointer">
+              <div class="w-10 h-10 bg-gradient-to-br from-[#0ea5e9] via-[#38bdf8] to-[#7dd3fc] rounded-xl flex items-center justify-center shadow-md shadow-[#38bdf8]/20 group-hover:scale-110 transition-transform duration-300">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                   <path d="M12 2L4 6V12C4 17 7.5 21.5 12 23C16.5 21.5 20 17 20 12V6L12 2Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   <rect x="9" y="10" width="6" height="5" rx="1" stroke="white" stroke-width="1.5"/>
                   <path d="M10 10V8C10 6.9 10.9 6 12 6C13.1 6 14 6.9 14 8V10" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
                 </svg>
               </div>
-              <span class="text-[10px] font-bold text-[#4bcfab] text-center uppercase tracking-wide leading-tight">Transacciones<br/>Seguras</span>
+              <span class="text-[10px] font-bold text-[#38bdf8] text-center uppercase tracking-wide leading-tight">Transacciones<br/>Seguras</span>
             </div>
             
           </div>
@@ -1879,5 +1970,203 @@ document.addEventListener('DOMContentLoaded', function() {
       }, 800); // Tiempo de "carga"
     });
   }
+});
+</script>
+
+<!-- Script para toggle de filtros avanzados -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const toggleBtn = document.getElementById('toggleFiltrosAvanzados');
+  const filtrosAvanzados = document.getElementById('filtrosAvanzados');
+  
+  if (toggleBtn && filtrosAvanzados) {
+    toggleBtn.addEventListener('click', function() {
+      const isVisible = filtrosAvanzados.style.display !== 'none';
+      
+      if (isVisible) {
+        // Cerrar con animación
+        filtrosAvanzados.style.animation = 'slideUp 0.3s ease-out forwards';
+        setTimeout(() => {
+          filtrosAvanzados.style.display = 'none';
+          filtrosAvanzados.style.animation = '';
+        }, 280);
+        toggleBtn.classList.remove('active');
+      } else {
+        // Abrir con animación
+        filtrosAvanzados.style.display = 'flex';
+        filtrosAvanzados.style.animation = 'slideDown 0.3s ease-out';
+        toggleBtn.classList.add('active');
+      }
+    });
+  }
+});
+</script>
+
+<style>
+@keyframes slideUp {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+/* Botón limpiar búsqueda */
+.btn-limpiar-busqueda {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.btn-limpiar-busqueda:hover {
+  background: #dc2626;
+  transform: scale(1.1);
+}
+
+.btn-limpiar-busqueda i {
+  font-size: 0.75rem;
+}
+
+/* Modo búsqueda activa */
+.tienda-tabs.busqueda-activa .tienda-tabs-header {
+  display: none !important;
+}
+
+.tienda-tabs.busqueda-activa .tienda-tab-content:not(#tab-productos) {
+  display: none !important;
+}
+
+.tienda-tabs.busqueda-activa #tab-productos {
+  display: block !important;
+}
+
+/* Indicador de búsqueda activa */
+.busqueda-indicador {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(135deg, #fef3c7 0%, #fef9c3 100%);
+  border: 1px solid #fcd34d;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  color: #92400e;
+  font-size: 0.875rem;
+}
+
+.busqueda-indicador i {
+  font-size: 1.25rem;
+  color: #f59e0b;
+}
+
+.busqueda-indicador .busqueda-texto {
+  flex: 1;
+}
+
+.busqueda-indicador .busqueda-texto strong {
+  color: #78350f;
+}
+
+.busqueda-indicador .btn-volver-tabs {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 1rem;
+  background: #fff;
+  color: #92400e;
+  border: 1px solid #fcd34d;
+  border-radius: 8px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.busqueda-indicador .btn-volver-tabs:hover {
+  background: #fef3c7;
+  border-color: #f59e0b;
+}
+</style>
+
+<!-- Script para búsqueda que oculta tabs -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const tiendaTabs = document.querySelector('.tienda-tabs');
+  const inputBuscar = document.getElementById('filtroBuscar');
+  const btnLimpiar = document.getElementById('limpiarBusqueda');
+  const tabProductos = document.getElementById('tab-productos');
+  
+  if (!inputBuscar || !tiendaTabs) return;
+  
+  let indicadorBusqueda = null;
+  
+  // Función para activar modo búsqueda
+  function activarModoBusqueda(texto) {
+    tiendaTabs.classList.add('busqueda-activa');
+    btnLimpiar.style.display = 'flex';
+    
+    // Crear indicador si no existe
+    if (!indicadorBusqueda && tabProductos) {
+      indicadorBusqueda = document.createElement('div');
+      indicadorBusqueda.className = 'busqueda-indicador';
+      indicadorBusqueda.innerHTML = `
+        <i class="ph ph-magnifying-glass"></i>
+        <span class="busqueda-texto">Resultados para: <strong>"${texto}"</strong></span>
+        <button class="btn-volver-tabs" id="btnVolverTabs">
+          <i class="ph ph-arrow-left"></i>
+          Volver a tabs
+        </button>
+      `;
+      tabProductos.insertBefore(indicadorBusqueda, tabProductos.firstChild);
+      
+      // Event listener para botón volver
+      document.getElementById('btnVolverTabs').addEventListener('click', limpiarBusqueda);
+    } else if (indicadorBusqueda) {
+      // Actualizar texto de búsqueda
+      indicadorBusqueda.querySelector('.busqueda-texto').innerHTML = `Resultados para: <strong>"${texto}"</strong>`;
+    }
+  }
+  
+  // Función para limpiar búsqueda
+  function limpiarBusqueda() {
+    tiendaTabs.classList.remove('busqueda-activa');
+    inputBuscar.value = '';
+    btnLimpiar.style.display = 'none';
+    
+    // Remover indicador
+    if (indicadorBusqueda) {
+      indicadorBusqueda.remove();
+      indicadorBusqueda = null;
+    }
+    
+    // Disparar evento input para resetear filtros
+    inputBuscar.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+  
+  // Event listeners
+  inputBuscar.addEventListener('input', function() {
+    const texto = this.value.trim();
+    
+    if (texto.length > 0) {
+      activarModoBusqueda(texto);
+    } else {
+      limpiarBusqueda();
+    }
+  });
+  
+  btnLimpiar.addEventListener('click', limpiarBusqueda);
 });
 </script>

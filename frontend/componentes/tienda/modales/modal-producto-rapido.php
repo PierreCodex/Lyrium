@@ -1,416 +1,527 @@
 <?php
 /**
- * COMPONENTE: Modal Vista Rápida de Producto
- * Estilo compacto similar a marketplaces
- * Usando TailwindCSS
+ * Modal: Vista Rápida de Producto
  */
 ?>
 
-<!-- MODAL: VISTA RÁPIDA DE PRODUCTO -->
-<div class="fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center p-4 opacity-0 invisible transition-all duration-300" id="modalProductoOverlay">
-  <div class="relative bg-white rounded max-w-[850px] w-full max-h-[90vh] overflow-hidden shadow-2xl transform translate-y-4 transition-transform duration-300" id="modalProducto">
+<div class="fixed inset-0 bg-black/60 z-[9999] flex items-center justify-center p-4 opacity-0 invisible transition-all duration-300 backdrop-blur-sm" id="modalProductoOverlay">
+  <div class="relative bg-white rounded-3xl max-w-[950px] w-full max-h-[90vh] overflow-y-auto overflow-x-hidden custom-scrollbar shadow-[0_20px_50px_rgba(0,0,0,0.3)] transform scale-95 transition-all duration-300" id="modalProducto">
     
-    <!-- Botón cerrar -->
-    <button class="absolute top-3 right-3 w-7 h-7 flex items-center justify-center z-10 text-gray-400 hover:text-rose-500 transition-colors" id="modalProductoClose" aria-label="Cerrar">
-      <i class="ph ph-x text-xl"></i>
-    </button>
+    <!-- HEADER -->
+    <div class="flex items-center justify-between px-6 py-4 border-b border-sky-50 bg-sky-50/30">
+      <div class="flex items-center gap-2 text-sky-600 font-medium">
+        <i class="ph ph-image text-xl"></i>
+        <span>Detalle del producto</span>
+      </div>
+      <button class="w-9 h-9 flex items-center justify-center rounded-full bg-white border border-gray-100 text-gray-400 hover:text-rose-500 hover:shadow-md transition-all" id="modalProductoClose">
+        <i class="ph ph-x text-lg"></i>
+      </button>
+    </div>
     
-    <div class="grid grid-cols-1 md:grid-cols-[380px_1fr] max-h-[90vh]">
-      <!-- Columna izquierda: Galería -->
-      <div class="p-5 bg-white flex flex-col gap-3 max-h-[320px] md:max-h-none border-b md:border-b-0 md:border-r border-gray-100">
+    <!-- CUERPO DEL MODAL (Relación de aspecto y espacio fiel a la referencia) -->
+    <div class="grid grid-cols-1 md:grid-cols-[1.1fr_450px]">
+      
+      <!-- COLUMNA IZQUIERDA: GALERÍA -->
+      <div class="p-6 md:border-r border-gray-100 flex flex-col gap-4">
         
-        <!-- Imagen principal -->
-        <div class="relative aspect-square bg-gray-50 rounded overflow-hidden flex items-center justify-center flex-1">
-          <button class="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/90 border border-gray-200 rounded-full flex items-center justify-center hover:bg-white hover:border-gray-300 transition-all z-5" id="modalGaleriaPrev">
-            <i class="ph ph-caret-left text-gray-500 text-sm"></i>
-          </button>
-          <img id="modalImagenPrincipal" class="max-w-full max-h-full object-contain" src="" alt="Producto">
-          <button class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/90 border border-gray-200 rounded-full flex items-center justify-center hover:bg-white hover:border-gray-300 transition-all z-5" id="modalGaleriaNext">
-            <i class="ph ph-caret-right text-gray-500 text-sm"></i>
-          </button>
+        <!-- Imagen con Zoom -->
+        <div class="relative group bg-gray-50 rounded-xl border border-gray-100 overflow-hidden aspect-square flex items-center justify-center cursor-zoom-in" id="modalZoomContainer">
+          
+          <!-- Tip Flotante -->
+          <div class="absolute top-4 left-4 z-20 px-3 py-1.5 bg-white/90 backdrop-blur-sm border border-sky-100 rounded-full text-[10px] text-gray-500 shadow-sm transition-opacity group-hover:opacity-100 flex items-center gap-2">
+            <i class="ph ph-mouse"></i>
+            <span>Rueda = zoom - Arrastra = mover</span>
+          </div>
+
+          <!-- Imagen con Zoom -->
+          <div class="w-full h-full relative" id="modalZoomWrapper">
+            <img id="modalImagenPrincipal" class="w-full h-full object-contain" src="" alt="Producto">
+          </div>
+          
+          <!-- Controles de Zoom Abajo -->
+          <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20">
+            <button class="w-9 h-9 bg-white shadow-sm border border-gray-100 rounded-lg text-gray-400 hover:text-sky-500 transition-colors flex items-center justify-center" onclick="ModalProducto.zoom(-0.2)">
+              <i class="ph ph-minus"></i>
+            </button>
+            <button class="w-9 h-9 bg-white shadow-sm border border-gray-100 rounded-lg text-gray-400 hover:text-sky-500 transition-colors flex items-center justify-center" onclick="ModalProducto.zoom(0.2)">
+              <i class="ph ph-plus"></i>
+            </button>
+            <button class="w-9 h-9 bg-white shadow-sm border border-gray-100 rounded-lg text-gray-400 hover:text-sky-500 transition-colors flex items-center justify-center" onclick="ModalProducto.resetZoom()">
+              <i class="ph ph-arrows-out"></i>
+            </button>
+          </div>
         </div>
         
         <!-- Miniaturas -->
-        <div class="flex gap-2 justify-center" id="modalThumbs">
-          <!-- Se generan dinámicamente -->
+        <div class="flex gap-2 overflow-x-auto pb-2 scrollbar-none justify-center" id="modalThumbs">
+          <!-- Dinámico -->
         </div>
       </div>
       
-      <!-- Columna derecha: Info -->
-      <div class="p-5 overflow-y-auto max-h-[50vh] md:max-h-[90vh]">
+      <!-- COLUMNA DERECHA: INFO (Calco exacto de la referencia) -->
+      <div class="p-8 flex flex-col gap-6">
         
-        <!-- Categoría -->
-        <span class="text-sm text-blue-500 mb-1 inline-block" id="modalCategoria">Categoría</span>
-        
-        <!-- Nombre -->
-        <h2 class="text-lg font-semibold text-gray-800 leading-snug mb-3" id="modalNombre">Nombre del producto</h2>
-        
-        <!-- Rating y código -->
-        <div class="flex items-center gap-3 mb-3 text-sm flex-wrap">
-          <div class="flex items-center gap-0.5" id="modalStars">
-            <i class="ph-fill ph-star text-amber-400"></i>
-            <i class="ph-fill ph-star text-amber-400"></i>
-            <i class="ph-fill ph-star text-amber-400"></i>
-            <i class="ph-fill ph-star text-amber-400"></i>
-            <i class="ph-fill ph-star-half text-amber-400"></i>
+        <!-- Fila 1: Nombre y Estrellas -->
+        <div class="flex justify-between items-center">
+          <h2 class="text-2xl font-normal text-slate-700" id="modalNombre">Producto</h2>
+          <div class="flex items-center gap-2 bg-slate-50 px-3 py-1 rounded-full border border-slate-100">
+            <div class="flex items-center gap-0.5 text-slate-200 text-sm" id="modalStars">
+              <i class="ph ph-star"></i><i class="ph ph-star"></i><i class="ph ph-star"></i><i class="ph ph-star"></i><i class="ph ph-star"></i>
+            </div>
+            <span class="text-[12px] text-slate-400" id="modalRatingText">0.0 (0)</span>
           </div>
-          <span class="text-gray-500" id="modalValoraciones">0</span>
-          <span class="text-gray-400" id="modalCodigo">Código: XXXX</span>
         </div>
-        
-        <!-- Precio y stock -->
-        <div class="flex items-center justify-between mb-3">
-          <div class="flex items-baseline gap-2">
-            <span class="text-2xl font-bold text-gray-800" id="modalPrecio">S/ 0.00</span>
-            <span class="text-sm text-gray-400 line-through" id="modalPrecioAnterior">S/ 0.00</span>
+
+        <!-- Fila 2: Categoría, SKU y Stock -->
+        <div class="flex justify-between items-center">
+          <div class="flex gap-2">
+            <span class="px-3 py-1 bg-slate-50 border border-slate-100 rounded-full text-[12px] text-slate-400" id="modalCategoria">Categoría</span>
+            <span class="px-3 py-1 bg-slate-50 border border-slate-100 rounded-full text-[12px] text-slate-400" id="modalCodigo">SKU: ---</span>
           </div>
-          <span class="text-sm font-medium text-green-500" id="modalStock">En stock</span>
+          <div class="flex items-center gap-1.5 text-sky-400 text-[12px]">
+            <i class="ph ph-cube"></i>
+            <span id="modalStock">Stock: 0</span>
+          </div>
         </div>
-        
-        <!-- Descripción -->
-        <p class="text-sm text-gray-500 leading-relaxed mb-4" id="modalDescripcion">
-          Descripción del producto...
-        </p>
-        
-        <!-- Cantidad y botón añadir -->
-        <div class="flex gap-3 mb-4">
-          <!-- Contador -->
-          <div class="inline-flex items-center border border-gray-200 rounded h-10 bg-white">
-            <button class="w-9 h-full flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition-colors" id="modalCantidadMenos">
-              <i class="ph ph-minus text-xs"></i>
-            </button>
-            <input type="number" class="w-10 h-full border-x border-gray-200 text-center text-sm font-medium text-gray-800 bg-white focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" id="modalCantidad" value="1" min="1" max="99">
-            <button class="w-9 h-full flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition-colors" id="modalCantidadMas">
-              <i class="ph ph-plus text-xs"></i>
-            </button>
+
+        <!-- Fila 3: Precio y Botones (Calco de Referencia 2) -->
+        <div class="flex justify-between items-center mt-2">
+          <!-- Bloque Precio -->
+          <div class="flex items-center gap-3">
+            <span class="text-sky-400 text-2xl font-light">$</span>
+            <div class="flex flex-col">
+              <div class="flex items-baseline gap-2">
+                <span class="text-xl font-medium text-emerald-800/80" id="modalPrecio">S/ 19.90</span>
+                <span class="text-xs text-slate-300 line-through opacity-0" id="modalPrecioAnterior">S/ 00.00</span>
+              </div>
+            </div>
           </div>
           
-          <!-- Botón carrito -->
-          <button class="flex-1 h-10 px-5 bg-blue-500 hover:bg-blue-600 text-white font-semibold text-sm rounded flex items-center justify-center gap-2 transition-colors" id="modalBtnCarrito">
-            Añadir a la cesta
-          </button>
-        </div>
-        
-        <!-- Acciones secundarias -->
-        <div class="flex gap-5 mb-4 pb-4 border-b border-gray-100">
-          <button class="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-800 transition-colors" id="modalBtnDeseos">
-            <i class="ph ph-heart text-base"></i>
-            Añadir a la lista de deseos
-          </button>
-          <button class="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-800 transition-colors">
-            <i class="ph ph-shuffle text-base"></i>
-            Comparar
-          </button>
-        </div>
-        
-        <!-- Info de la tienda -->
-        <div class="flex items-center gap-3 p-3 bg-gray-50 rounded mb-4">
-          <div class="w-10 h-10 bg-blue-500 rounded flex items-center justify-center overflow-hidden" id="modalTiendaLogo">
-            <span class="text-white font-bold">T</span>
-          </div>
-          <div class="flex-1">
-            <span class="block text-xs text-gray-400">Almacenar:</span>
-            <a href="#" class="text-sm font-semibold text-gray-800 hover:text-blue-500 transition-colors" id="modalTiendaNombre">Tienda</a>
-          </div>
-          <div class="flex items-center gap-0.5">
-            <i class="ph-fill ph-star text-xs text-amber-400"></i>
-            <i class="ph-fill ph-star text-xs text-amber-400"></i>
-            <i class="ph-fill ph-star text-xs text-amber-400"></i>
-            <i class="ph-fill ph-star text-xs text-amber-400"></i>
-            <i class="ph ph-star text-xs text-amber-400"></i>
-            <span class="text-xs text-gray-500 ml-1" id="modalTiendaReviews">0</span>
+          <!-- Bloque Botones -->
+          <div class="flex gap-3">
+            <button class="h-10 px-6 rounded-full bg-sky-500 hover:bg-sky-600 text-white text-sm font-medium flex items-center gap-2 transition-all" id="modalBtnCarrito">
+              <i class="ph ph-shopping-cart text-lg"></i>
+              Añadir
+            </button>
+            <button class="h-10 px-6 rounded-full border border-sky-100 text-slate-600 text-sm font-medium flex items-center gap-2 hover:bg-sky-50 transition-all">
+              <i class="ph ph-shopping-bag text-lg text-sky-400"></i>
+              Ver carrito
+            </button>
           </div>
         </div>
         
-        <!-- Beneficios -->
-        <div class="flex flex-col gap-2 mb-4">
-          <div class="flex items-center gap-2 text-sm text-gray-500">
-            <i class="ph ph-truck text-base text-green-500"></i>
-            <span>Envío y devoluciones gratis para este artículo</span>
+        <!-- Tagline -->
+        <p class="text-[15px] text-slate-500 mt-2" id="modalTagline">Resumen corto del producto</p>
+
+        <!-- Secciones Detalle -->
+        <div class="space-y-6 mt-4">
+          <div>
+            <div class="flex items-center gap-2 text-sky-400 text-[14px] mb-2">
+              <i class="ph ph-list-bullets"></i> Atributos
+            </div>
+            <p class="text-[14px] text-slate-400" id="modalAtributos">Sin atributos registrados.</p>
           </div>
-          <div class="flex items-center gap-2 text-sm text-gray-500">
-            <i class="ph ph-clock text-base text-green-500"></i>
-            <span id="modalEntrega">Entrega en 3-5 días laborables</span>
-          </div>
-          <div class="flex items-center gap-2 text-sm text-gray-500">
-            <i class="ph ph-shield-check text-base text-green-500"></i>
-            <span>Garantía de devolución de dinero</span>
-          </div>
-        </div>
-        
-        <!-- Compartir -->
-        <div class="pt-4 border-t border-gray-100">
-          <span class="block text-sm text-gray-500 mb-2">Comparte este producto:</span>
-          <div class="flex gap-2">
-            <a href="#" class="w-8 h-8 rounded-full bg-[#1877f2] flex items-center justify-center text-white hover:scale-110 transition-transform">
-              <i class="ph ph-facebook-logo text-sm"></i>
-            </a>
-            <a href="#" class="w-8 h-8 rounded-full bg-[#1da1f2] flex items-center justify-center text-white hover:scale-110 transition-transform">
-              <i class="ph ph-twitter-logo text-sm"></i>
-            </a>
-            <a href="#" class="w-8 h-8 rounded-full bg-[#e60023] flex items-center justify-center text-white hover:scale-110 transition-transform">
-              <i class="ph ph-pinterest-logo text-sm"></i>
-            </a>
-            <a href="#" class="w-8 h-8 rounded-full bg-[#0a66c2] flex items-center justify-center text-white hover:scale-110 transition-transform">
-              <i class="ph ph-linkedin-logo text-sm"></i>
-            </a>
-            <a href="#" class="w-8 h-8 rounded-full bg-[#25d366] flex items-center justify-center text-white hover:scale-110 transition-transform">
-              <i class="ph ph-whatsapp-logo text-sm"></i>
-            </a>
-            <a href="#" class="w-8 h-8 rounded-full bg-[#0088cc] flex items-center justify-center text-white hover:scale-110 transition-transform">
-              <i class="ph ph-telegram-logo text-sm"></i>
-            </a>
+          <div>
+            <div class="flex items-center gap-2 text-sky-400 text-[14px] mb-2">
+              <i class="ph ph-text-aa"></i> Detalle
+            </div>
+            <p class="text-[14px] text-slate-400 leading-relaxed" id="modalDescripcion">Cargando descripción...</p>
           </div>
         </div>
       </div>
+
     </div>
+    
+    <!-- Footer Tip -->
+    <div class="px-6 py-3 border-t border-sky-50 bg-sky-50/20">
+      <div class="flex items-center gap-2 text-[10px] text-gray-400">
+        <i class="ph ph-info"></i>
+        <span>Tip: miniatura cambia imagen; rueda zoom; doble click reset.</span>
+      </div>
+    </div>
+
   </div>
 </div>
 
 <style>
-/* Solo estilos necesarios para el estado activo del modal */
+/* CLASES DE ESTADO */
 #modalProductoOverlay.active {
   opacity: 1;
   visibility: visible;
 }
 #modalProductoOverlay.active #modalProducto {
-  transform: translateY(0);
+  transform: scale(1);
 }
+
+/* MINIATURAS */
 .modal-thumb {
-  width: 55px;
-  height: 55px;
-  border: 2px solid transparent;
-  border-radius: 4px;
+  flex-shrink: 0;
+  width: 70px;
+  height: 70px;
+  border-radius: 12px;
+  border: 2px solid #f1f5f9;
   overflow: hidden;
   cursor: pointer;
-  transition: border-color 0.2s ease;
+  transition: all 0.2s ease;
+  background: white;
 }
 .modal-thumb:hover {
   border-color: #cbd5e1;
 }
 .modal-thumb.active {
-  border-color: #3b82f6;
+  border-color: #0ea5e9;
+  box-shadow: 0 4px 10px rgba(14, 165, 233, 0.1);
 }
 .modal-thumb img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  padding: 4px;
+}
+
+/* SCROLLBAR CUSTOM PRO */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #94a3b8 #f1f5f9;
+}
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 10px;
+  border: 2px solid #f1f5f9;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+/* ZOOM CONTAINER */
+#modalZoomWrapper {
+  transition: transform 0.1s ease-out;
+  transform-origin: center center;
+}
+
+/* ================================================ */
+/* RESPONSIVE: MODAL MÓVIL                          */
+/* ================================================ */
+@media (max-width: 768px) {
+  /* Overlay con menos padding */
+  #modalProductoOverlay {
+    padding: 0 !important;
+    align-items: flex-end !important;
+  }
+
+  /* Modal fullscreen en móvil */
+  #modalProducto {
+    max-width: 100% !important;
+    width: 100% !important;
+    max-height: 95vh !important;
+    border-radius: 20px 20px 0 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Grid a 1 columna */
+  #modalProducto > div:nth-child(2) {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  /* Galería más compacta */
+  #modalProducto .p-6.md\\:border-r {
+    padding: 1rem !important;
+    border-right: none !important;
+  }
+
+  /* Imagen más pequeña en móvil */
+  #modalZoomContainer {
+    aspect-ratio: 4/3 !important;
+    min-height: 200px !important;
+    max-height: 280px !important;
+  }
+
+  /* Miniaturas más pequeñas */
+  .modal-thumb {
+    width: 55px !important;
+    height: 55px !important;
+    border-radius: 8px !important;
+  }
+
+  /* Info del producto */
+  #modalProducto .p-8 {
+    padding: 1rem 1.25rem !important;
+  }
+
+  /* Nombre más pequeño */
+  #modalNombre {
+    font-size: 1.25rem !important;
+  }
+
+  /* Fila con nombre y estrellas - stack */
+  #modalProducto .flex.justify-between.items-center:first-child {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.5rem !important;
+  }
+
+  /* Precio y botones - stack en móvil */
+  #modalProducto .flex.justify-between.items-center.mt-2 {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 1rem !important;
+  }
+
+  /* Botones a ancho completo */
+  #modalProducto .flex.gap-3:has(#modalBtnCarrito) {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 0.5rem !important;
+  }
+
+  #modalBtnCarrito,
+  #modalProducto .flex.gap-3 button {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  /* Controles de zoom más pequeños */
+  #modalZoomContainer .absolute.bottom-4 button {
+    width: 32px !important;
+    height: 32px !important;
+  }
+
+  /* Tip de zoom oculto en móvil */
+  #modalZoomContainer > div:first-child {
+    display: none !important;
+  }
+
+  /* Header más compacto */
+  #modalProducto .px-6.py-4 {
+    padding: 0.75rem 1rem !important;
+  }
+
+  /* Footer más compacto */
+  #modalProducto .px-6.py-3 {
+    padding: 0.5rem 1rem !important;
+  }
+
+  /* Tags más pequeños */
+  #modalCategoria,
+  #modalCodigo {
+    font-size: 10px !important;
+    padding: 0.25rem 0.5rem !important;
+  }
+
+  /* Secciones de detalle más compactas */
+  #modalProducto .space-y-6 {
+    gap: 0.75rem !important;
+  }
+  
+  #modalProducto .space-y-6 > div {
+    margin-bottom: 0.5rem !important;
+  }
+}
+
+/* Extra pequeño (iPhone SE, etc) */
+@media (max-width: 380px) {
+  #modalZoomContainer {
+    max-height: 220px !important;
+  }
+
+  .modal-thumb {
+    width: 45px !important;
+    height: 45px !important;
+  }
+
+  #modalNombre {
+    font-size: 1.1rem !important;
+  }
 }
 </style>
 
 <script>
-/**
- * Módulo de Vista Rápida de Producto
- */
 const ModalProducto = {
   overlay: null,
   modal: null,
+  zoomWrapper: null,
+  scale: 1,
+  posX: 0,
+  posY: 0,
+  isDragging: false,
+  startX: 0,
+  startY: 0,
   productoActual: null,
-  imagenActual: 0,
-  
+
   init() {
     this.overlay = document.getElementById('modalProductoOverlay');
     this.modal = document.getElementById('modalProducto');
+    this.zoomWrapper = document.getElementById('modalZoomWrapper');
     
     if (!this.overlay) return;
-    
-    // Cerrar modal
-    document.getElementById('modalProductoClose')?.addEventListener('click', () => this.cerrar());
+
+    // Eventos Básicos
+    document.getElementById('modalProductoClose').addEventListener('click', () => this.cerrar());
     this.overlay.addEventListener('click', (e) => {
       if (e.target === this.overlay) this.cerrar();
     });
-    
-    // Tecla Escape
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && this.overlay.classList.contains('active')) {
-        this.cerrar();
-      }
-    });
-    
-    // Cantidad
-    document.getElementById('modalCantidadMenos')?.addEventListener('click', () => this.cambiarCantidad(-1));
-    document.getElementById('modalCantidadMas')?.addEventListener('click', () => this.cambiarCantidad(1));
-    
-    // Navegación galería
-    document.getElementById('modalGaleriaPrev')?.addEventListener('click', () => this.navegarGaleria(-1));
-    document.getElementById('modalGaleriaNext')?.addEventListener('click', () => this.navegarGaleria(1));
-    
-    // Agregar al carrito
-    document.getElementById('modalBtnCarrito')?.addEventListener('click', () => this.agregarCarrito());
-    
-    // Lista de deseos
-    document.getElementById('modalBtnDeseos')?.addEventListener('click', () => this.toggleDeseos());
+
+    // Lógica de Zoom con Rueda
+    const zoomContainer = document.getElementById('modalZoomContainer');
+    if (zoomContainer) {
+      zoomContainer.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const delta = e.deltaY > 0 ? -0.2 : 0.2;
+        this.zoom(delta);
+      });
+
+      // Lógica de Arrastre (Pan)
+      zoomContainer.addEventListener('mousedown', (e) => this.startDragging(e));
+      window.addEventListener('mousemove', (e) => this.drag(e));
+      window.addEventListener('mouseup', () => this.stopDragging());
+      
+      // Reset en doble click
+      zoomContainer.addEventListener('dblclick', () => this.resetZoom());
+    }
   },
-  
+
   abrir(productoId) {
-    const producto = this.obtenerProducto(productoId);
+    const producto = this.obtenerDatosProducto(productoId);
+    if (!producto) return;
+
     this.productoActual = producto;
-    this.imagenActual = 0;
+    this.llenarDatos(producto);
+    this.resetZoom();
     
-    this.llenarModal(producto);
     this.overlay.classList.add('active');
     document.body.style.overflow = 'hidden';
   },
-  
+
   cerrar() {
     this.overlay.classList.remove('active');
     document.body.style.overflow = '';
   },
-  
-  obtenerProducto(id) {
-    const productosPage = window.tiendaProductos || [];
-    const tiendaInfo = window.tiendaInfo || {};
-    
-    const productoEncontrado = productosPage.find(p => p.id === id);
-    
-    if (productoEncontrado) {
-      return {
-        id: productoEncontrado.id,
-        nombre: productoEncontrado.nombre,
-        precio: productoEncontrado.precio,
-        precioAnterior: productoEncontrado.precio_anterior || null,
-        categoria: tiendaInfo.categoria || 'General',
-        codigo: `LY${String(productoEncontrado.id).padStart(4, '0')}`,
-        descripcion: productoEncontrado.descripcion || 'Producto de alta calidad. Consulta más detalles en la página del producto.',
-        valoraciones: productoEncontrado.valoraciones || Math.floor(Math.random() * 50) + 5,
-        tienda: tiendaInfo.nombre || 'Tienda',
-        tiendaLogo: tiendaInfo.logo || null,
-        tiendaReviews: Math.floor(Math.random() * 100) + 10,
-        imagenes: [productoEncontrado.imagen],
-        stock: productoEncontrado.stock || Math.floor(Math.random() * 50) + 10,
-        entrega: '3-5 días laborables'
-      };
-    }
-    
+
+  obtenerDatosProducto(id) {
+    const productos = window.tiendaProductos || [];
+    const p = productos.find(item => item.id == id);
+    if (!p) return null;
+
     return {
-      id: id,
-      nombre: 'Producto no encontrado',
-      precio: 0,
-      precioAnterior: null,
-      categoria: 'Sin categoría',
-      codigo: 'N/A',
-      descripcion: 'Este producto no está disponible.',
-      valoraciones: 0,
-      tienda: 'Tienda',
-      tiendaLogo: null,
-      tiendaReviews: 0,
-      imagenes: ['https://via.placeholder.com/400x400?text=Sin+imagen'],
-      stock: 0,
-      entrega: 'No disponible'
+      id: p.id,
+      nombre: p.nombre,
+      precio: p.precio,
+      precioAnterior: p.precio_anterior || null,
+      categoria: p.categoria || 'Sin categoría',
+      sku: `LYR-${p.categoria?.substring(0,3).toUpperCase() || 'GEN'}-${String(p.id).padStart(3, '0')}`,
+      stock: p.stock || 0,
+      rating: p.rating || 0.0,
+      comentarios: p.ventas || 0,
+      tagline: p.descripcion_corta || 'Calidad garantizada',
+      descripcion: p.descripcion || 'Sin descripción detallada.',
+      imagenes: [p.imagen]
     };
   },
-  
-  llenarModal(producto) {
-    document.getElementById('modalCategoria').textContent = producto.categoria;
-    document.getElementById('modalNombre').textContent = producto.nombre;
-    document.getElementById('modalImagenPrincipal').src = producto.imagenes[0];
+
+  llenarDatos(p) {
+    document.getElementById('modalNombre').textContent = p.nombre;
+    document.getElementById('modalCategoria').textContent = p.categoria;
+    document.getElementById('modalCodigo').textContent = `SKU: ${p.sku}`;
+    document.getElementById('modalStock').textContent = `Stock: ${p.stock}`;
+    document.getElementById('modalPrecio').textContent = `S/ ${p.precio.toFixed(2)}`;
     
-    // Miniaturas
-    const thumbsContainer = document.getElementById('modalThumbs');
-    thumbsContainer.innerHTML = producto.imagenes.map((img, i) => `
-      <div class="modal-thumb ${i === 0 ? 'active' : ''}" onclick="ModalProducto.seleccionarImagen(${i})">
-        <img src="${img}" alt="Miniatura ${i + 1}">
+    const pAnterior = document.getElementById('modalPrecioAnterior');
+    if (p.precioAnterior) {
+      pAnterior.textContent = `S/ ${p.precioAnterior.toFixed(2)}`;
+      pAnterior.classList.remove('opacity-0');
+    } else {
+      pAnterior.classList.add('opacity-0');
+    }
+
+    const starsContainer = document.getElementById('modalStars');
+    const ratingText = document.getElementById('modalRatingText');
+    const starsHtml = [];
+    const ratingValue = p.rating || 5.0;
+    
+    for (let i = 1; i <= 5; i++) {
+        if (i <= Math.floor(ratingValue)) {
+            starsHtml.push('<i class="ph-fill ph-star"></i>');
+        } else if (i - ratingValue < 1) {
+            starsHtml.push('<i class="ph-fill ph-star-half"></i>');
+        } else {
+            starsHtml.push('<i class="ph ph-star text-slate-200"></i>');
+        }
+    }
+    starsContainer.innerHTML = starsHtml.join('');
+    if (ratingText) {
+        ratingText.textContent = `${ratingValue.toFixed(1)} (${p.comentarios})`;
+    }
+
+    document.getElementById('modalTagline').textContent = p.tagline;
+    document.getElementById('modalDescripcion').textContent = p.descripcion;
+    document.getElementById('modalImagenPrincipal').src = p.imagenes[0];
+
+    const thumbs = document.getElementById('modalThumbs');
+    thumbs.innerHTML = p.imagenes.map((img, i) => `
+      <div class="modal-thumb ${i === 0 ? 'active' : ''}" onclick="ModalProducto.cambiarImagen(this, '${img}')">
+        <img src="${img}" alt="Thumb">
       </div>
     `).join('');
-    
-    document.getElementById('modalValoraciones').textContent = producto.valoraciones;
-    document.getElementById('modalCodigo').textContent = `Código: ${producto.codigo}`;
-    document.getElementById('modalPrecio').textContent = `S/ ${producto.precio.toFixed(2)}`;
-    
-    const precioAnterior = document.getElementById('modalPrecioAnterior');
-    if (producto.precioAnterior) {
-      precioAnterior.textContent = `S/ ${producto.precioAnterior.toFixed(2)}`;
-      precioAnterior.style.display = 'inline';
-    } else {
-      precioAnterior.style.display = 'none';
+  },
+
+  cambiarImagen(thumb, src) {
+    document.getElementById('modalImagenPrincipal').src = src;
+    document.querySelectorAll('.modal-thumb').forEach(t => t.classList.remove('active'));
+    thumb.classList.add('active');
+    this.resetZoom();
+  },
+
+  zoom(delta) {
+    this.scale = Math.min(Math.max(1, this.scale + delta), 4);
+    this.aplicarTransform();
+  },
+
+  resetZoom() {
+    this.scale = 1;
+    this.posX = 0;
+    this.posY = 0;
+    this.aplicarTransform();
+  },
+
+  aplicarTransform() {
+    if (this.zoomWrapper) {
+      this.zoomWrapper.style.transform = `scale(${this.scale}) translate(${this.posX}px, ${this.posY}px)`;
     }
-    
-    const stockEl = document.getElementById('modalStock');
-    if (producto.stock > 0) {
-      stockEl.textContent = 'En stock';
-      stockEl.className = 'text-sm font-medium text-green-500';
-    } else {
-      stockEl.textContent = 'Agotado';
-      stockEl.className = 'text-sm font-medium text-red-500';
-    }
-    
-    document.getElementById('modalDescripcion').textContent = producto.descripcion;
-    document.getElementById('modalTiendaNombre').textContent = producto.tienda;
-    
-    const logoEl = document.getElementById('modalTiendaLogo');
-    if (producto.tiendaLogo) {
-      logoEl.innerHTML = `<img src="${producto.tiendaLogo}" class="w-full h-full object-cover" alt="${producto.tienda}">`;
-    } else {
-      logoEl.innerHTML = `<span class="text-white font-bold">${producto.tienda.charAt(0).toUpperCase()}</span>`;
-    }
-    
-    document.getElementById('modalTiendaReviews').textContent = producto.tiendaReviews;
-    document.getElementById('modalEntrega').textContent = `Entrega en ${producto.entrega}`;
-    document.getElementById('modalCantidad').value = 1;
   },
-  
-  seleccionarImagen(index) {
-    if (!this.productoActual) return;
-    this.imagenActual = index;
-    document.getElementById('modalImagenPrincipal').src = this.productoActual.imagenes[index];
-    document.querySelectorAll('.modal-thumb').forEach((t, i) => {
-      t.classList.toggle('active', i === index);
-    });
+
+  startDragging(e) {
+    if (this.scale <= 1) return;
+    this.isDragging = true;
+    this.startX = e.clientX - this.posX;
+    this.startY = e.clientY - this.posY;
+    document.getElementById('modalZoomContainer').classList.add('cursor-grabbing');
   },
-  
-  navegarGaleria(direction) {
-    if (!this.productoActual) return;
-    const total = this.productoActual.imagenes.length;
-    this.imagenActual = (this.imagenActual + direction + total) % total;
-    this.seleccionarImagen(this.imagenActual);
+
+  drag(e) {
+    if (!this.isDragging) return;
+    this.posX = e.clientX - this.startX;
+    this.posY = e.clientY - this.startY;
+    this.aplicarTransform();
   },
-  
-  cambiarCantidad(delta) {
-    const input = document.getElementById('modalCantidad');
-    let valor = parseInt(input.value) + delta;
-    if (valor < 1) valor = 1;
-    if (valor > 99) valor = 99;
-    input.value = valor;
-  },
-  
-  agregarCarrito() {
-    const btn = document.getElementById('modalBtnCarrito');
-    btn.innerHTML = '<i class="ph ph-check"></i> Agregado';
-    btn.classList.remove('bg-blue-500', 'hover:bg-blue-600');
-    btn.classList.add('bg-green-500');
-    
-    setTimeout(() => {
-      btn.textContent = 'Añadir a la cesta';
-      btn.classList.remove('bg-green-500');
-      btn.classList.add('bg-blue-500', 'hover:bg-blue-600');
-    }, 2000);
-  },
-  
-  toggleDeseos() {
-    const btn = document.getElementById('modalBtnDeseos');
-    const icon = btn.querySelector('i');
-    
-    if (icon.classList.contains('ph-heart')) {
-      icon.classList.remove('ph-heart');
-      icon.classList.add('ph-heart-fill');
-      btn.classList.add('text-rose-500');
-    } else {
-      icon.classList.remove('ph-heart-fill');
-      icon.classList.add('ph-heart');
-      btn.classList.remove('text-rose-500');
-    }
+
+  stopDragging() {
+    this.isDragging = false;
+    document.getElementById('modalZoomContainer')?.classList.remove('cursor-grabbing');
   }
 };
 
 document.addEventListener('DOMContentLoaded', () => ModalProducto.init());
 
-function vistaRapidaProducto(productoId) {
-  ModalProducto.abrir(productoId);
-}
-
-if (typeof TiendaModule !== 'undefined') {
-  TiendaModule.vistaRapida = vistaRapidaProducto;
-} else {
-  window.TiendaModule = { vistaRapida: vistaRapidaProducto };
+function vistaRapidaProducto(id) {
+  ModalProducto.abrir(id);
 }
 </script>

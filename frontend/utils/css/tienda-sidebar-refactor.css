@@ -102,6 +102,9 @@
 
 .tienda-sidebar-banner {
     padding: 0 !important;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 /* Hack para que el header azul cubra el borde del contenedor */

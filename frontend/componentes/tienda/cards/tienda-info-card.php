@@ -88,8 +88,8 @@ $horario_hoy = $horarios[$dia_actual] ?? null;
     
     <!-- Sección 1: Entregas Nacionales -->
     <div class="service-card flex items-center gap-3 px-5 py-4 flex-1 hover:bg-slate-50/50 transition-colors cursor-pointer">
-      <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center overflow-hidden">
-        <i class="ph-fill ph-truck text-emerald-600 text-xl icon-truck-animated"></i>
+      <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-sky-50 flex items-center justify-center overflow-hidden">
+        <i class="ph-fill ph-truck text-sky-600 text-xl icon-truck-animated"></i>
       </div>
       <div class="min-w-0">
         <p class="font-semibold text-slate-800 text-sm">Entregas nacionales</p>
@@ -123,7 +123,7 @@ $horario_hoy = $horarios[$dia_actual] ?? null;
         <div class="flex items-center gap-2">
           <p class="font-semibold text-slate-800 text-sm">Horarios</p>
           <?php if ($tienda['abierto']): ?>
-          <span class="inline-flex items-center px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[10px] font-semibold rounded-full">
+          <span class="inline-flex items-center px-2 py-0.5 bg-sky-100 text-sky-700 text-[10px] font-semibold rounded-full">
             Abierto
           </span>
           <?php else: ?>

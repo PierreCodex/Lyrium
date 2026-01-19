@@ -2,60 +2,6 @@
 
 $slug = $_GET['slug'] ?? 'vida-natural';
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// CARGAR DATOS DE LA TIENDA DESDE LA BASE DE DATOS
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-// ⚠️ TEMPORALMENTE DESACTIVADO - Usando datos estáticos para demostración
-/*
-require_once __DIR__ . '/../backend/config/Conexion.php';
-
-try {
-    $stmt = $conn->prepare("
-        SELECT 
-            id, nombre_tienda, slug, descripcion, logo_url, banner_url,
-            plan, telefono, whatsapp, direccion, ciudad,
-            redes_sociales, tema, layout_modelo, estado
-        FROM tiendas
-        WHERE slug = :slug AND estado = 'activo'
-    ");
-    $stmt->execute([':slug' => $slug]);
-    $tiendaDB = $stmt->fetch(PDO::FETCH_ASSOC);
-    
-    if (!$tiendaDB) {
-        die('Tienda no encontrada');
-    }
-    
-    // Convertir datos de BD a formato esperado
-    $tienda = [
-        'id' => $tiendaDB['id'],
-        'nombre' => $tiendaDB['nombre_tienda'],
-        'slug' => $tiendaDB['slug'],
-        'descripcion' => $tiendaDB['descripcion'] ?? 'Tienda en línea',
-        'logo' => $tiendaDB['logo_url'] ?? 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Iconic_image_of_a_leaf.svg/256px-Iconic_image_of_a_leaf.svg.png',
-        'cover' => $tiendaDB['banner_url'] ?? 'https://images.unsplash.com/photo-1543362906-acfc16c67564?q=80&w=1400&auto=format&fit=crop',
-        'plan' => $tiendaDB['plan'],
-        'categoria' => 'Salud y Bienestar',
-        'telefono' => $tiendaDB['telefono'] ?? '',
-        'correo' => 'contacto@' . $tiendaDB['slug'] . '.com',
-        'direccion' => $tiendaDB['direccion'] ?? '',
-        'actividad' => 'Comercio en línea',
-        'rubros' => ['Productos'],
-        'layout_modelo' => (int)($tiendaDB['layout_modelo'] ?? 3),
-        'tema' => $tiendaDB['tema'] ?? ''
-    ];
-    
-} catch (PDOException $e) {
-    die('Error al cargar tienda: ' . $e->getMessage());
-}
-
-$plan = $tienda['plan'];
-*/
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// DATOS ESTÁTICOS PARA DEMOSTRACIÓN (SIN BASE DE DATOS)
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
 $tienda = [
     'id' => 1,
     'nombre' => 'Vida Natural',
@@ -70,7 +16,7 @@ $tienda = [
     'direccion' => 'Urb. Los Educadores Mz M Lt 04, Piura',
     'actividad' => 'Comercio en línea',
     'rubros' => ['Productos Naturales', 'Suplementos', 'Vitaminas'],
-    'layout_modelo' => 1, // 🎨 CAMBIAR AQUÍ: 1=sidebar derecha, 2=sidebar izquierda, 3=full width
+    'layout_modelo' => 3, // 🎨 CAMBIAR AQUÍ: 1=sidebar derecha, 2=sidebar izquierda, 3=full width
     'tema' => '' // 🎨 CAMBIAR AQUÍ: '', 'tema-ocean', 'tema-dark', 'tema-minimal'
 ];
 
@@ -78,7 +24,7 @@ $plan = $tienda['plan'];
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // CONFIGURACIÓN DE LAYOUT Y TEMA (SOLO PREMIUM)
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 $tema_actual = ($plan === 'premium') ? $tienda['tema'] : ''; 
 $modelo_layout = ($plan === 'premium') ? $tienda['layout_modelo'] : 3;
@@ -143,6 +89,15 @@ $productos = [
   ['id' => 14, 'nombre' => 'Semillas de Chía', 'precio' => 22.00, 'imagen' => 'img/productos/producto_chia.png', 'sticker' => 'promo', 'rating' => 5, 'reviews' => 82, 'stock' => 75, 'categoria' => 'Superfoods', 'descripcion' => 'Semillas de chía orgánicas ricas en omega-3, fibra y antioxidantes.'],
   ['id' => 15, 'nombre' => 'Cúrcuma en Polvo', 'precio' => 32.00, 'imagen' => 'img/productos/producto_curcuma.png', 'sticker' => 'limitado', 'rating' => 5, 'reviews' => 36, 'stock' => 30, 'categoria' => 'Especias', 'descripcion' => 'Cúrcuma orgánica con alto contenido de curcumina. Potente antiinflamatorio natural.'],
   ['id' => 16, 'nombre' => 'Jengibre en Polvo', 'precio' => 26.00, 'imagen' => 'img/productos/producto_jengibre.png', 'sticker' => '', 'rating' => 4, 'reviews' => 24, 'stock' => 45, 'categoria' => 'Especias', 'descripcion' => 'Jengibre orgánico deshidratado. Mejora la digestión y tiene propiedades antiinflamatorias.'],
+  // Productos adicionales para la tercera fila
+  ['id' => 17, 'nombre' => 'Linaza Dorada', 'precio' => 18.00, 'imagen' => 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=300', 'sticker' => 'nuevo', 'rating' => 5, 'reviews' => 33, 'stock' => 55, 'categoria' => 'Superfoods', 'descripcion' => 'Linaza dorada orgánica rica en omega-3 y fibra. Ideal para batidos y ensaladas.'],
+  ['id' => 18, 'nombre' => 'Moringa en Cápsulas', 'precio' => 48.00, 'precio_anterior' => 62.00, 'imagen' => 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=300', 'sticker' => 'oferta', 'rating' => 5, 'reviews' => 27, 'stock' => 30, 'categoria' => 'Suplementos', 'descripcion' => 'Moringa oleifera en cápsulas vegetales. Superalimento con alto contenido nutricional.'],
+  ['id' => 19, 'nombre' => 'Harina de Almendras', 'precio' => 45.00, 'imagen' => 'https://images.unsplash.com/photo-1599599810769-bcde5a160d32?w=300', 'sticker' => '', 'rating' => 4, 'reviews' => 19, 'stock' => 35, 'categoria' => 'Orgánicos', 'descripcion' => 'Harina de almendras sin gluten. Perfecta para repostería saludable y dietas keto.'],
+  ['id' => 20, 'nombre' => 'Té de Hibisco', 'precio' => 24.00, 'imagen' => 'https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=300', 'sticker' => 'promo', 'rating' => 5, 'reviews' => 51, 'stock' => 65, 'categoria' => 'Bebidas', 'descripcion' => 'Té de flor de hibisco orgánico. Delicioso caliente o frío, con propiedades antioxidantes.'],
+  ['id' => 21, 'nombre' => 'Avena Integral', 'precio' => 15.00, 'imagen' => 'https://images.unsplash.com/photo-1517093157656-b9eccef91cb1?w=300', 'sticker' => '', 'rating' => 4, 'reviews' => 88, 'stock' => 100, 'categoria' => 'Granos', 'descripcion' => 'Avena integral orgánica sin gluten. Alta en fibra y perfecta para desayunos nutritivos.'],
+  ['id' => 22, 'nombre' => 'Aceite de Oliva Extra Virgen', 'precio' => 52.00, 'imagen' => 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=300', 'sticker' => 'limitado', 'rating' => 5, 'reviews' => 62, 'stock' => 25, 'categoria' => 'Orgánicos', 'descripcion' => 'Aceite de oliva extra virgen prensado en frío. Importado de España, calidad premium.'],
+  ['id' => 23, 'nombre' => 'Cacao en Polvo', 'precio' => 35.00, 'imagen' => 'https://images.unsplash.com/photo-1481391032119-d89fee407e44?w=300', 'sticker' => 'nuevo', 'rating' => 5, 'reviews' => 44, 'stock' => 40, 'categoria' => 'Superfoods', 'descripcion' => 'Cacao orgánico sin azúcar. Rico en antioxidantes y magnesio natural.'],
+  ['id' => 24, 'nombre' => 'Stevia Natural', 'precio' => 28.00, 'precio_anterior' => 35.00, 'imagen' => 'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=300', 'sticker' => 'oferta', 'rating' => 4, 'reviews' => 37, 'stock' => 50, 'categoria' => 'Endulzantes', 'descripcion' => 'Stevia natural en polvo. Endulzante sin calorías ideal para diabéticos y dietas.'],
 ];
 
 
@@ -312,6 +267,8 @@ $tienda['abierto'] = calcularEstado($horarios);
   <link href="utils/css/tienda-slider-descuentos.css?v=<?php echo time(); ?>" rel="stylesheet" />
   <link href="utils/css/tienda-sidebar-refactor.css?v=<?php echo time(); ?>" rel="stylesheet" />
   <link href="utils/css/tienda-sliders-fullwidth.css?v=<?php echo time(); ?>" rel="stylesheet" />
+  <link href="utils/css/tienda-filtros.css?v=<?php echo time(); ?>" rel="stylesheet" />
+  <link href="utils/css/tienda-mobile.css?v=<?php echo time(); ?>" rel="stylesheet" />
   
   <!-- Critical CSS para evitar FOUC (Flash of Unstyled Content) -->
   <style>
@@ -333,6 +290,142 @@ $tienda['abierto'] = calcularEstado($horarios);
 <body class="bg-white min-h-screen">
 
 <?php include 'header.php'; ?>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- HEADER FLOTANTE - Solo Logo Lyrium (más alto y visible) -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="lyriumFloatingHeader" class="fixed top-0 left-0 right-0 z-[9998] transform -translate-y-full transition-transform duration-300">
+  <div class="bg-white shadow-lg border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <!-- Logo Lyrium más grande -->
+      <a href="index.php" class="flex items-center gap-3">
+        <img src="img/logo.png" alt="Lyrium Biomarketplace" class="h-10 w-auto">
+      </a>
+      
+      <!-- Acciones rápidas con más padding -->
+      <div class="flex items-center gap-5">
+        <a href="tiendasregistradas.php" class="flex items-center gap-1.5 text-sm text-slate-600 hover:text-sky-600 transition-colors font-medium">
+          <i class="ph ph-storefront text-lg"></i>
+          <span class="hidden sm:inline">Tiendas</span>
+        </a>
+        <a href="index.php" class="flex items-center gap-1.5 text-sm text-slate-600 hover:text-sky-600 transition-colors font-medium">
+          <i class="ph ph-house text-lg"></i>
+          <span class="hidden sm:inline">Inicio</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+/* Contenedor glass cuando está sticky - bordes redondeados en la parte inferior */
+.tienda-header-sticky.is-sticky .tienda-header-glass {
+  border-radius: 0 0 16px 16px;
+}
+
+/* Asegurar que el tienda-container ocupe todo el ancho cuando está sticky */
+.tienda-header-sticky.is-sticky .tienda-container {
+  max-width: 100%;
+  padding: 0 1rem;
+}
+
+/* Fila principal más compacta cuando está sticky */
+.tienda-header-sticky.is-sticky .tienda-header-row-main {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+/* Cards más compactas cuando está sticky */
+.tienda-header-sticky.is-sticky .tienda-header-row-cards {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+/* MOBILE: Ocultar cards cuando está sticky para no ocupar tanto espacio */
+@media (max-width: 768px) {
+  .tienda-header-sticky.is-sticky .tienda-header-row-cards {
+    display: none !important;
+  }
+  
+  /* Ajustar borde inferior del glass en mobile */
+  .tienda-header-sticky.is-sticky .tienda-header-glass {
+    border-radius: 0 0 12px 12px;
+  }
+}
+</style>
+
+<script>
+// Mostrar/ocultar mini header y fijar header de tienda al hacer scroll
+document.addEventListener('DOMContentLoaded', function() {
+  const floatingHeader = document.getElementById('lyriumFloatingHeader');
+  const mainHeader = document.querySelector('header');
+  const tiendaHeader = document.getElementById('tiendaHeaderSticky');
+  
+  if (!floatingHeader || !mainHeader || !tiendaHeader) return;
+  
+  const triggerPoint = mainHeader.offsetHeight + 50;
+  const lyriumHeaderHeight = 64; // Altura del mini header de Lyrium
+  
+  // Crear un placeholder para mantener el espacio cuando el header está fixed
+  let placeholder = null;
+  
+  function handleScroll() {
+    const currentScrollY = window.scrollY;
+    
+    if (currentScrollY > triggerPoint) {
+      // Mostrar mini header de Lyrium
+      floatingHeader.classList.remove('-translate-y-full');
+      floatingHeader.classList.add('translate-y-0');
+      
+      // Fijar TODO el header de la tienda debajo del mini header
+      if (!tiendaHeader.classList.contains('is-sticky')) {
+        // Crear placeholder si no existe
+        if (!placeholder) {
+          placeholder = document.createElement('div');
+          placeholder.style.height = tiendaHeader.offsetHeight + 'px';
+          placeholder.classList.add('header-placeholder');
+        }
+        
+        // Insertar placeholder para mantener el espacio
+        tiendaHeader.parentNode.insertBefore(placeholder, tiendaHeader.nextSibling);
+        
+        // Fijar el header completo de la tienda
+        tiendaHeader.classList.add('is-sticky');
+        tiendaHeader.style.position = 'fixed';
+        tiendaHeader.style.top = lyriumHeaderHeight + 'px';
+        tiendaHeader.style.left = '0';
+        tiendaHeader.style.right = '0';
+        tiendaHeader.style.zIndex = '9996';
+        tiendaHeader.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.1)';
+      }
+      
+    } else {
+      // Ocultar mini header de Lyrium
+      floatingHeader.classList.add('-translate-y-full');
+      floatingHeader.classList.remove('translate-y-0');
+      
+      // Restaurar header de tienda a su posición normal
+      if (tiendaHeader.classList.contains('is-sticky')) {
+        tiendaHeader.classList.remove('is-sticky');
+        tiendaHeader.style.position = '';
+        tiendaHeader.style.top = '';
+        tiendaHeader.style.left = '';
+        tiendaHeader.style.right = '';
+        tiendaHeader.style.zIndex = '';
+        tiendaHeader.style.boxShadow = '';
+        
+        // Remover placeholder
+        if (placeholder && placeholder.parentNode) {
+          placeholder.parentNode.removeChild(placeholder);
+        }
+      }
+    }
+  }
+  
+  window.addEventListener('scroll', handleScroll, { passive: true });
+  handleScroll(); // Check initial state
+});
+</script>
 
 <!-- Secciones de tienda con tema localizado -->
 <?php $scope_tema = $tema_actual; ?>
@@ -419,6 +512,7 @@ $tienda['abierto'] = calcularEstado($horarios);
 <script src="js/tienda.js?v=<?php echo time(); ?>"></script>
 <!-- <script src="js/bloques-animaciones.js?v=<?php echo time(); ?>"></script> -->
 <script src="js/tienda-sliders.js?v=<?php echo time(); ?>"></script>
+<script src="js/tienda-filtros.js?v=<?php echo time(); ?>"></script>
 
 </body>
 </html>

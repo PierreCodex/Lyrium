@@ -285,7 +285,7 @@
 .tienda-sidebar-producto-card:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     transform: translateY(-2px);
-    border-color: #3b82f6;
+    border-color: #0ea5e9;
 }
 
 .tienda-sidebar-producto-imagen {
@@ -324,7 +324,7 @@
 .tienda-sidebar-producto-precio {
     font-size: 1.125rem;
     font-weight: 700;
-    color: #3b82f6;
+    color: #0ea5e9;
 }
 
 .tienda-sidebar-producto-precio-anterior {
@@ -345,7 +345,7 @@
 .tienda-sidebar-producto-btn {
     margin-top: auto;
     padding: 0.5rem 1rem;
-    background: #3b82f6;
+    background: #0ea5e9;
     color: #fff;
     border: none;
     border-radius: 6px;
@@ -356,7 +356,7 @@
 }
 
 .tienda-sidebar-producto-btn:hover {
-    background: #2563eb;
+    background: #0284c7;
     transform: scale(1.05);
 }
 

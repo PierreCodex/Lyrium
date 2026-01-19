@@ -1,12 +1,12 @@
 <?php
 /**
- * COMPONENTE: Sidebar Vertical de Productos - Trending Items Style
- * Diseño tipo lista vertical con estética consistente de la tienda
+ * COMPONENTE: Sidebar Vertical de Productos - Cards Apiladas
+ * Diseño con imagen panorámica arriba y info abajo
  */
 
-// Carrusel: Mostrar 6 productos a la vez, rotar entre todos los disponibles
-$itemsVisibles = 6; // Productos visibles simultáneamente
-$productosSidebar = $productos ?? []; // Todos los productos disponibles
+// Mostrar 4 productos visibles para alineación con el grid (3 filas)
+$itemsVisibles = 4;
+$productosSidebar = $productos ?? [];
 
 // Mapeo de stickers para consistencia global
 $stickerTextos = [
@@ -15,80 +15,117 @@ $stickerTextos = [
     'promo' => 'Promo',
     'limitado' => 'Limitado'
 ];
+
+// Colores para badges de categoría (usando sky como base)
+$categoriasColores = [
+    'Vitaminas' => 'bg-sky-100 text-sky-700',
+    'Suplementos' => 'bg-sky-100 text-sky-700',
+    'Proteínas' => 'bg-sky-100 text-sky-700',
+    'Belleza' => 'bg-sky-100 text-sky-700',
+    'Energía' => 'bg-sky-100 text-sky-700',
+    'Superfoods' => 'bg-sky-100 text-sky-700',
+    'Orgánicos' => 'bg-sky-100 text-sky-700',
+    'Granos' => 'bg-sky-100 text-sky-700',
+    'Especias' => 'bg-sky-100 text-sky-700',
+    'Digestivo' => 'bg-sky-100 text-sky-700',
+];
 ?>
 
-<div class="tienda-sidebar-trending">
+<div class="tienda-sidebar-cards">
     
     <!-- Header con título y navegación -->
-    <div class="tienda-sidebar-trending-header">
-        <h3 class="tienda-sidebar-trending-title">
-            <i class="ph-fill ph-trend-up"></i>
+    <div class="sidebar-cards-header flex items-center justify-between">
+        <h3 class="flex items-center gap-2 text-base font-bold text-slate-800">
+            <i class="ph-fill ph-chart-line-up text-sky-500"></i>
             Artículos de tendencia
         </h3>
-        <div class="tienda-sidebar-trending-nav">
-            <button class="tienda-sidebar-nav-btn prev" type="button" aria-label="Anterior">
-                <i class="ph ph-caret-left"></i>
+        <div class="flex gap-1">
+            <button class="sidebar-cards-nav-btn prev w-7 h-7 flex items-center justify-center bg-slate-100 hover:bg-sky-500 hover:text-white rounded-md text-slate-500 transition-all" type="button">
+                <i class="ph ph-caret-left text-sm"></i>
             </button>
-            <button class="tienda-sidebar-nav-btn next" type="button" aria-label="Siguiente">
-                <i class="ph ph-caret-right"></i>
+            <button class="sidebar-cards-nav-btn next w-7 h-7 flex items-center justify-center bg-slate-100 hover:bg-sky-500 hover:text-white rounded-md text-slate-500 transition-all" type="button">
+                <i class="ph ph-caret-right text-sm"></i>
             </button>
         </div>
     </div>
 
-    <!-- Lista de productos -->
-    <div class="tienda-sidebar-trending-list" data-carousel="sidebar-trending">
-        <?php foreach ($productosSidebar as $producto): ?>
-        <div class="tienda-sidebar-trending-item">
+    <!-- Cards de productos apiladas -->
+    <div class="sidebar-cards-container flex flex-col gap-4" data-carousel="sidebar-cards">
+        <?php foreach (array_slice($productosSidebar, 0, $itemsVisibles) as $producto): ?>
+        <div class="sidebar-product-card bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md hover:border-sky-300 transition-all group">
             
-            <!-- Imagen del producto -->
-            <div class="tienda-sidebar-trending-img">
-                <img src="<?php echo htmlspecialchars($producto['imagen']); ?>" 
-                     alt="<?php echo htmlspecialchars($producto['nombre']); ?>">
+            <!-- Imagen panorámica -->
+            <div class="relative aspect-[16/10] overflow-hidden bg-slate-100">
+                <img 
+                    src="<?php echo htmlspecialchars($producto['imagen']); ?>" 
+                    alt="<?php echo htmlspecialchars($producto['nombre']); ?>"
+                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    loading="lazy"
+                >
                 
-                <!-- Sticker opcional -->
+                <!-- Sticker -->
                 <?php if (!empty($producto['sticker'])): ?>
-                <span class="tienda-producto-sticker <?php echo htmlspecialchars($producto['sticker']); ?>">
+                <span class="absolute top-2 left-2 px-2 py-0.5 text-[10px] font-bold uppercase rounded-full
+                    <?php 
+                    $stickerClases = [
+                        'oferta' => 'bg-red-500 text-white',
+                        'nuevo' => 'bg-sky-500 text-white',
+                        'promo' => 'bg-amber-500 text-white',
+                        'limitado' => 'bg-purple-500 text-white'
+                    ];
+                    echo $stickerClases[$producto['sticker']] ?? 'bg-slate-500 text-white';
+                    ?>">
                     <?php echo $stickerTextos[$producto['sticker']] ?? $producto['sticker']; ?>
                 </span>
                 <?php endif; ?>
-            </div>
-
-            <!-- Información del producto -->
-            <div class="tienda-sidebar-trending-info">
                 
-                <!-- Nombre del producto -->
-                <h4 class="tienda-sidebar-trending-name">
+                <!-- Botón favorito -->
+                <button class="absolute top-2 right-2 w-7 h-7 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-full text-slate-400 hover:text-red-500 hover:bg-white transition-all opacity-0 group-hover:opacity-100">
+                    <i class="ph ph-heart text-sm"></i>
+                </button>
+            </div>
+            
+            <!-- Info del producto -->
+            <div class="p-3">
+                <!-- Nombre -->
+                <h4 class="font-semibold text-slate-800 text-sm mb-1.5 line-clamp-1 group-hover:text-sky-600 transition-colors">
                     <?php echo htmlspecialchars($producto['nombre']); ?>
                 </h4>
                 
-                <!-- Categoría o descripción -->
-                <p class="tienda-sidebar-trending-category">
-                    <?php echo htmlspecialchars($producto['categoria'] ?? 'Productos'); ?>
-                </p>
-                
-                <!-- Precios -->
-                <div class="tienda-sidebar-trending-prices">
-                    <span class="tienda-sidebar-trending-price">
-                        S/<?php echo number_format($producto['precio'], 2); ?>
+                <!-- Categoría badge + Precio -->
+                <div class="flex items-center justify-between gap-2">
+                    <span class="px-2 py-0.5 text-[10px] font-medium rounded-full <?php 
+                        $cat = $producto['categoria'] ?? 'Productos';
+                        echo $categoriasColores[$cat] ?? 'bg-slate-100 text-slate-600';
+                    ?>">
+                        <?php echo htmlspecialchars($producto['categoria'] ?? 'Productos'); ?>
                     </span>
-                    <?php if (!empty($producto['precio_anterior'])): ?>
-                    <span class="tienda-sidebar-trending-price-old">
-                        S/<?php echo number_format($producto['precio_anterior'], 2); ?>
-                    </span>
-                    <?php endif; ?>
+                    
+                    <div class="flex items-center gap-1.5">
+                        <?php if (!empty($producto['precio_anterior'])): ?>
+                        <span class="text-xs text-slate-400 line-through">
+                            S/<?php echo number_format($producto['precio_anterior'], 2); ?>
+                        </span>
+                        <?php endif; ?>
+                        <span class="text-sm font-bold text-sky-600">
+                            S/<?php echo number_format($producto['precio'], 2); ?>
+                        </span>
+                    </div>
                 </div>
+                
+                <!-- Botón añadir al carrito -->
+                <button class="w-full mt-3 flex items-center justify-center gap-1.5 px-3 py-2 bg-slate-100 hover:bg-sky-500 text-slate-600 hover:text-white text-xs font-medium rounded-lg transition-all">
+                    <i class="ph ph-shopping-cart text-sm"></i>
+                    Añadir al carrito
+                </button>
             </div>
-
-            <!-- Botón de agregar al carrito -->
-            <button class="tienda-sidebar-trending-cart-btn" type="button" aria-label="Agregar al carrito">
-                <i class="ph ph-shopping-cart"></i>
-            </button>
-
+            
         </div>
         <?php endforeach; ?>
     </div>
 
 </div>
+
 
 <script>
 /**
@@ -259,10 +296,136 @@ $stickerTextos = [
 
 <style>
 /* ========================================
-   SIDEBAR TRENDING ITEMS
-   Estilo lista vertical con estética de la tienda
+   ANIMACIONES DEL SIDEBAR
+   Efectos dinámicos estilo Temu/AliExpress
    ======================================== */
 
+/* Animación de entrada con fade y slide up */
+@keyframes fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in-up {
+    animation: fade-in-up 0.5s ease-out forwards;
+    opacity: 0;
+}
+
+/* Efecto shimmer para carga de imágenes */
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+.animate-shimmer {
+    animation: shimmer 2s infinite linear;
+}
+
+/* Pulso sutil para stickers */
+@keyframes pulse-subtle {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.animate-pulse-subtle {
+    animation: pulse-subtle 2s ease-in-out infinite;
+}
+
+/* Bounce sutil para iconos */
+@keyframes bounce-subtle {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-2px);
+    }
+}
+
+.animate-bounce-subtle {
+    animation: bounce-subtle 0.5s ease-in-out;
+}
+
+/* ========================================
+   SIDEBAR CARDS APILADAS
+   Diseño con imagen panorámica y info abajo
+   ======================================== */
+
+.tienda-sidebar-cards {
+    background: #fff;
+    border: 1px solid var(--tienda-border, #e2e8f0);
+    border-radius: 14px;
+    padding: 0; /* Eliminar padding para alinear con tabs */
+    box-shadow: 0 8px 30px var(--tienda-shadow, rgba(0,0,0,0.05));
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    flex: 1;
+}
+
+/* Header del sidebar - alineado exactamente con las pestañas */
+.sidebar-cards-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0;
+    margin: 0;
+    background: #fff;
+    border-radius: 14px 14px 0 0;
+    border-top: 1px solid #e5e7eb;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+/* Título del sidebar - mismo estilo que los tabs */
+.sidebar-cards-header h3 {
+    padding: 0.625rem 1rem;
+    margin: 0;
+}
+
+/* Botones de navegación del sidebar */
+.sidebar-cards-header .flex.gap-1 {
+    padding-right: 0.5rem;
+}
+
+.tienda-sidebar-cards .sidebar-cards-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem 1.25rem;
+}
+
+/* Scrollbar personalizado para el sidebar */
+.tienda-sidebar-cards .sidebar-cards-container::-webkit-scrollbar {
+    width: 4px;
+}
+
+.tienda-sidebar-cards .sidebar-cards-container::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+}
+
+.tienda-sidebar-cards .sidebar-cards-container::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+.tienda-sidebar-cards .sidebar-cards-container::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Compatibilidad con clase anterior */
 .tienda-sidebar-trending {
     background: #fff;
     border: 1px solid var(--tienda-border);
@@ -358,11 +521,11 @@ $stickerTextos = [
 /* === IMAGEN === */
 .tienda-sidebar-trending-img {
     position: relative;
-    width: 70px;
-    height: 70px;
+    width: 100px;
+    height: 100px;
     flex-shrink: 0;
     background: #f8fafc;
-    border-radius: 10px;
+    border-radius: 12px;
     overflow: hidden;
     border: 1px solid #e2e8f0;
 }
@@ -472,9 +635,41 @@ $stickerTextos = [
     }
 }
 
-@media (max-width: 640px) {
+/* === MOBILE: Carrusel Horizontal === */
+@media (max-width: 768px) {
+    /* Sidebar Cards - Convertir a carrusel horizontal */
+    .tienda-sidebar-cards {
+        width: 100%;
+        background: transparent;
+        padding: 0;
+    }
+    
+    .sidebar-cards-container {
+        flex-direction: row !important;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        gap: 1rem;
+        padding-bottom: 0.5rem;
+        scrollbar-width: none;
+    }
+    
+    .sidebar-cards-container::-webkit-scrollbar {
+        display: none;
+    }
+    
+    .sidebar-product-card {
+        flex: 0 0 70%;
+        min-width: 200px;
+        max-width: 280px;
+        scroll-snap-align: start;
+    }
+    
+    /* Sidebar Trending - Convertir a carrusel horizontal */
     .tienda-sidebar-trending {
         padding: 1rem;
+        width: 100%;
     }
     
     .tienda-sidebar-trending-header {
@@ -485,9 +680,39 @@ $stickerTextos = [
         font-size: 0.875rem;
     }
     
+    .tienda-sidebar-trending-list {
+        flex-direction: row !important;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        gap: 1rem;
+        padding-bottom: 0.5rem;
+        scrollbar-width: none;
+    }
+    
+    .tienda-sidebar-trending-list::-webkit-scrollbar {
+        display: none;
+    }
+    
+    .tienda-sidebar-trending-item {
+        flex: 0 0 auto;
+        min-width: 160px;
+        max-width: 200px;
+        scroll-snap-align: start;
+        flex-direction: column !important;
+        padding: 0.75rem;
+    }
+    
     .tienda-sidebar-trending-img {
-        width: 60px;
-        height: 60px;
+        width: 100% !important;
+        height: 100px !important;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+    }
+    
+    .tienda-sidebar-trending-info {
+        width: 100%;
     }
     
     .tienda-sidebar-trending-name {
@@ -501,6 +726,16 @@ $stickerTextos = [
     .tienda-sidebar-trending-cart-btn {
         opacity: 1;
         transform: translateX(0);
+        position: relative;
+        margin-top: 0.5rem;
+        width: 100%;
+        justify-content: center;
+    }
+    
+    /* Ocultar botones de navegación en mobile (usar scroll táctil) */
+    .sidebar-cards-nav-btn,
+    .tienda-sidebar-nav-btn {
+        display: none;
     }
 }
 </style>

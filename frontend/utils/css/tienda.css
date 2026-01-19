@@ -246,7 +246,8 @@ body.tienda-header-active main.tienda-container {
   display: grid;
   gap: 1.5rem;
   margin-top: 1.5rem;
-  align-items: start;
+  align-items: stretch;
+  /* Ambas columnas comparten la misma altura */
 }
 
 /* MODELO 1: Sidebar Derecha (Default) */
@@ -268,6 +269,59 @@ body.tienda-header-active main.tienda-container {
 .layout-sidebar-left .tienda-main-column {
   grid-column: 2;
   grid-row: 1;
+}
+
+/* MODELO 3 ESPECIAL: Layout de 3 columnas (Sidebar Izq + Centro + Sidebar Der) */
+.layout-three-columns {
+  grid-template-columns: 220px 1fr 220px;
+  gap: 1.25rem;
+}
+
+.layout-three-columns .tienda-sidebar-left {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.layout-three-columns .tienda-main-column {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.layout-three-columns .tienda-sidebar-right {
+  grid-column: 3;
+  grid-row: 1;
+}
+
+/* Responsive para layout de 3 columnas */
+@media (max-width: 1200px) {
+  .layout-three-columns {
+    grid-template-columns: 200px 1fr 200px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .layout-three-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .layout-three-columns .tienda-sidebar-left,
+  .layout-three-columns .tienda-main-column,
+  .layout-three-columns .tienda-sidebar-right {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .layout-three-columns .tienda-sidebar-left {
+    order: 1;
+  }
+
+  .layout-three-columns .tienda-main-column {
+    order: 2;
+  }
+
+  .layout-three-columns .tienda-sidebar-right {
+    order: 3;
+  }
 }
 
 /* MODELO 3: Sin Sidebars (Full Width) */
@@ -316,13 +370,24 @@ body.tienda-header-active main.tienda-container {
   min-width: 0;
 }
 
-/* El sidebar se mantiene sticky mientras se scrollea el contenido */
-.tienda-main-layout>.tienda-slider-vertical-container,
-.tienda-main-layout>aside {
-  position: sticky;
-  top: 1rem;
-  max-height: calc(100vh - 2rem);
-  align-self: start;
+/* El sidebar en layouts con stretch - ocupa toda la altura del contenido */
+.tienda-main-layout>.tienda-bloque[data-tipo="sidebar"] {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.tienda-main-layout>.tienda-bloque[data-tipo="sidebar"] .tienda-sidebar-banner,
+.tienda-main-layout>.tienda-bloque[data-tipo="sidebar"] .tienda-sidebar-cards {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* El sidebar cards se estira para ocupar toda la altura */
+.tienda-main-layout .tienda-sidebar-cards .sidebar-cards-container {
+  flex: 1;
+  overflow-y: auto;
 }
 
 @media (max-width: 1024px) {
@@ -383,6 +448,194 @@ body.tienda-header-active main.tienda-container {
   .tienda-productos-grid-4 {
     grid-template-columns: 1fr;
   }
+}
+
+/* ========================================= */
+/* LAYOUT: SELECCIONES DESTACADAS + SIDEBAR */
+/* Sidebar derecho con altura = 4 filas productos */
+/* ========================================= */
+.tienda-selecciones-layout {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.tienda-selecciones-grid {
+  min-width: 0;
+}
+
+/* Sidebar con altura fija basada en 3 filas de productos */
+/* Altura ajustada para alinearse con el grid de productos */
+.tienda-selecciones-sidebar {
+  position: sticky;
+  top: 1rem;
+  height: auto;
+  /* Altura automática para mostrar todo el contenido */
+  min-height: calc(320px * 3 + 4rem);
+  /* 3 filas de productos con espaciado */
+  overflow: visible;
+  /* Permitir que todo el contenido sea visible */
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: white;
+  border-radius: 16px;
+  padding: 1rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+}
+
+/* Scrollbar personalizado para el sidebar */
+.tienda-selecciones-sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.tienda-selecciones-sidebar::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+
+.tienda-selecciones-sidebar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.tienda-selecciones-sidebar::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Ajuste en el grid de productos cuando hay sidebar */
+.tienda-selecciones-grid .tienda-productos-grid {
+  grid-template-columns: repeat(4, 1fr) !important;
+}
+
+@media (max-width: 1200px) {
+  .tienda-selecciones-grid .tienda-productos-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+@media (max-width: 1024px) {
+  .tienda-selecciones-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .tienda-selecciones-sidebar {
+    position: relative;
+    top: 0;
+    max-height: none;
+    order: -1;
+    /* Sidebar arriba en móvil */
+  }
+
+  .tienda-selecciones-grid .tienda-productos-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .tienda-selecciones-grid .tienda-productos-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .tienda-selecciones-grid .tienda-productos-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ========================================= */
+/* GRID PRODUCTOS SECUNDARIOS - 5 COLUMNAS */
+/* Para sección "Descubre más productos" */
+/* ========================================= */
+.tienda-tabs .tienda-productos-grid.productos-secundarios-grid,
+.tienda-productos-grid.productos-secundarios-grid {
+  grid-template-columns: repeat(5, 1fr) !important;
+}
+
+@media (max-width: 1100px) {
+
+  .tienda-tabs .tienda-productos-grid.productos-secundarios-grid,
+  .tienda-productos-grid.productos-secundarios-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+}
+
+@media (max-width: 900px) {
+
+  .tienda-tabs .tienda-productos-grid.productos-secundarios-grid,
+  .tienda-productos-grid.productos-secundarios-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+@media (max-width: 640px) {
+
+  .tienda-tabs .tienda-productos-grid.productos-secundarios-grid,
+  .tienda-productos-grid.productos-secundarios-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 400px) {
+
+  .tienda-tabs .tienda-productos-grid.productos-secundarios-grid,
+  .tienda-productos-grid.productos-secundarios-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ========================================= */
+/* SIDEBAR COMPACTO (Altura = 2 filas) */
+/* Para sección "Descubre más productos" */
+/* ========================================= */
+.layout-sidebar-compact {
+  align-items: start;
+}
+
+.tienda-sidebar-compact .tienda-sidebar-cards {
+  max-height: none;
+  /* Permitir altura automática */
+  overflow: visible;
+  /* Asegurar que todo el contenido sea visible */
+}
+
+.tienda-sidebar-compact .sidebar-cards-container {
+  max-height: none;
+  overflow: visible;
+  padding-bottom: 1rem;
+  /* Espacio para el botón */
+}
+
+/* Mostrar solo 2 productos en el sidebar compacto para alinearse con 2 filas */
+.tienda-sidebar-compact .sidebar-product-card:nth-child(n+3) {
+  display: none;
+}
+
+/* ========================================= */
+/* SIDEBAR COMPACTO 3 (Altura = 3 filas) */
+/* Para sección "Más productos para ti" */
+/* ========================================= */
+.layout-sidebar-compact-3 {
+  align-items: start;
+}
+
+.tienda-sidebar-compact-3 .tienda-sidebar-cards {
+  max-height: none;
+  overflow: visible;
+}
+
+.tienda-sidebar-compact-3 .sidebar-cards-container {
+  max-height: none;
+  overflow: visible;
+  padding-bottom: 1rem;
+}
+
+/* Mostrar solo 2 productos en el sidebar para que no sea muy largo */
+.tienda-sidebar-compact-3 .sidebar-product-card:nth-child(n+3) {
+  display: none;
 }
 
 /* === GALERÍA DE FOTOS (S) === */
